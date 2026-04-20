@@ -7,10 +7,15 @@ file produce a full Netlify-ready site from a reusable HTML/CSS scaffold.
 
 ```bash
 python generate.py content/bryant.txt --cards content/bryant.cards.txt --out dist/bryant
-cd dist/bryant && python -m http.server 8000
+cd dist/bryant && netlify dev
 ```
 
-Open http://localhost:8000.
+Open the URL Netlify prints (typically http://localhost:8888).
+
+`netlify dev` handles the extensionless URLs (`/services`, `/about`) and
+the contact form. If you don't have the Netlify CLI (`npm i -g netlify-cli`),
+you can fall back to `python -m http.server 8000`, but nav links to
+`/services` etc. will 404 without it.
 
 ## Repo layout
 
@@ -23,6 +28,7 @@ site-generator/
 │   ├── services.html
 │   ├── contact.html
 │   ├── thank-you.html
+│   ├── netlify.toml        # copied into each dist/<name>/ output
 │   ├── css/
 │   └── images/
 ├── content/

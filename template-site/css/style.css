@@ -37,8 +37,8 @@ body {
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.65;
-  color: var(--black);
-  background: var(--white);
+  color: var(--off-white);
+  background: var(--black);
 }
 
 img {
@@ -261,10 +261,10 @@ p {
 
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100dvh - var(--nav-height));
   display: flex;
-  align-items: flex-end;
-  padding-bottom: clamp(3rem, 6vw, 6rem);
+  align-items: center;
   overflow: hidden;
   background: var(--black);
 }
@@ -694,6 +694,7 @@ hr {
   }
 
   .hero {
-    min-height: 75vh;
+    min-height: calc(100vh - var(--nav-height));
+    min-height: calc(100dvh - var(--nav-height));
   }
 }

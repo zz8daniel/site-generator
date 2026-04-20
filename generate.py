@@ -220,7 +220,8 @@ def build_context(content: dict, cards: list[dict], card_tpl: str) -> dict:
 
 
 def copy_static(src: Path, out: Path) -> None:
-    """Copy template-site/css and template-site/images verbatim to out."""
+    """Copy template-site/css and template-site/images verbatim to out,
+    plus netlify.toml if present so the output is a drop-in deployable site."""
     for sub in ('css', 'images'):
         s = src / sub
         d = out / sub
@@ -228,6 +229,9 @@ def copy_static(src: Path, out: Path) -> None:
             if d.exists():
                 shutil.rmtree(d)
             shutil.copytree(s, d)
+    toml = src / 'netlify.toml'
+    if toml.exists():
+        shutil.copy2(toml, out / 'netlify.toml')
 
 
 def main() -> int:
