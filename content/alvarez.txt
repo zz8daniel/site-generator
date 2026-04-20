@@ -1,0 +1,49 @@
+# Alvarez Cycle Works - site content
+
+business_name: Alvarez Cycle Works
+owner_name: Rita Alvarez
+location: Portland, OR
+service_area: Portland, Beaverton, Lake Oswego, OR
+email: rita@alvarezcycleworks.com
+phone_display: (503) 555-0142
+phone_dial: +15035550142
+booking_url: https://alvarezcycleworks.com/book
+year: 2026
+
+meta_description: Independent bicycle mechanic in Portland, OR. Tune-ups, overhauls, and mobile service.
+
+hero_title_line1: Alvarez Cycle
+hero_title_line2: Works
+hero_subtitle: Independent bicycle mechanic. Tune-ups, overhauls & mobile service in Portland
+
+about_short >>>
+I'm an independent bicycle mechanic based in Portland, OR. I trained at <a href="https://www.uccr.edu/" target="_blank" rel="noopener" style="text-decoration: underline; text-underline-offset: 3px">UBI</a> in Ashland and now run a one-woman shop out of a converted garage in Southeast Portland.
+<<<
+
+about_bio >>>
+I'm Rita Alvarez, an independent bicycle mechanic based in Portland, OR. I trained at <a href="https://www.uccr.edu/" target="_blank" rel="noopener" style="text-decoration: underline; text-underline-offset: 3px">UBI</a> in Ashland and have been wrenching professionally for over a decade.
+
+Whether you ride a daily commuter, a carbon race bike, or a loaded touring rig, I treat every bike like it's going out on a long trip tomorrow. No upsells, no mystery charges — just careful work and a clear explanation of what I did and why.
+<<<
+
+about_cta_heading: Ready to get rolling?
+about_cta_body: Book a tune-up or get in touch about a bigger project.
+
+services_page_title: Services
+services_intro >>>
+I offer two tiers of service depending on how your bike is running. Not sure what you need? Book a Tune-Up for now, or <a href="/contact" style="text-decoration: underline; text-underline-offset: 3px">Contact me</a> and describe what's going on.
+<<<
+
+services_cta_heading: Let's talk about your bike
+services_cta_body: Tell me a little about your ride and what's going on, and I'll get back to you ASAP.
+
+contact_page_title: Contact
+contact_message_label: Tell Me About Your Bike
+contact_message_placeholder: Brand, model, approximate age, last service date, any issues you've noticed...
+
+contact_service_options >>>
+<option value="tuneup">Tune-Up</option>
+<option value="overhaul">Full Overhaul</option>
+<<<
+
+thank_you_body: I'll review your message and get back to you as soon as I can.

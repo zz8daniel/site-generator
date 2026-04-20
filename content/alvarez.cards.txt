@@ -1,0 +1,26 @@
+# Cards for Alvarez Cycle Works.
+
+name: Tune-Up
+intro: A full inspection and adjustment to get your bike shifting, braking, and rolling smoothly. Includes:
+bullets:
+- Shifting and brake adjustment
+- Wheel truing (minor)
+- Drivetrain cleaning and lube
+- Tire pressure and torque check
+
+---
+
+name: Full Overhaul
+intro: "A deep service for tired bikes. You may need this if your bike:"
+bullets:
+- Hasn't been serviced in more than 2 years
+- Makes grinding or clicking noises
+- Has a drivetrain that slips under load
+- Needs bearings repacked or replaced
+
+---
+
+name: Absolute Madness
+intro: "CRAZY TIME"
+bullets:
+- lots of stuff
