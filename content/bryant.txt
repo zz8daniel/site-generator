@@ -1,0 +1,51 @@
+# Bryant Piano Service - site content
+
+business_name: Bryant Piano Service
+owner_name: David Bryant
+location: Cambridge, MA
+service_area: Boston, Cambridge, Somerville, MA
+email: dbryant5598@gmail.com
+phone_display: (617) 710-5598
+phone_dial: +16177105598
+booking_url: https://gazelleapp.io/scheduling/9RZL3PMt2mm32mnJ4fjXTSyx
+year: 2025
+
+meta_description: Professional piano tuning and service in Cambridge and Somerville, MA.
+
+hero_title_line1: Bryant Piano
+hero_title_line2: Service
+hero_subtitle: Professional piano tuning & repair. Boston, Cambridge, and Somerville.
+
+about_short >>>
+I'm a professional piano technician based in Cambridge, MA. I was trained at <a href="https://nbss.edu/" target="_blank" rel="noopener" style="text-decoration: underline; text-underline-offset: 3px">NBSS</a> in Boston and now service pianos across the greater metropolitan area.
+<<<
+
+about_bio >>>
+I'm David Bryant, a professional piano technician based in Cambridge, MA. I was trained at <a href="https://nbss.edu/" target="_blank" rel="noopener" style="text-decoration: underline; text-underline-offset: 3px">NBSS</a> in Boston and now service pianos across the greater metropolitan area.
+
+Whether your piano needs a standard tuning or a full regulation, I bring the same level of care and precision to every instrument.
+<<<
+
+about_cta_heading: Ready to get started?
+about_cta_body: Book a standard tuning or reach out with questions about your instrument.
+
+services_page_title: My Services
+services_intro >>>
+I offer two tiers of service depending on the state of your instrument. Not sure which you need? Book a Standard Tuning for now, or <a href="/contact" style="text-decoration: underline; text-underline-offset: 3px">Contact me</a> any time.
+<<<
+
+services_cta_heading: Let's talk about your piano
+services_cta_body: Tell me a little about your instrument and I'll get back to you within 48 hours.
+
+contact_page_title: Contact Me
+contact_message_label: Tell Me About Your Piano
+contact_message_placeholder: Brand, serial #, age, last service date, any issues you've noticed...
+
+# <option> entries for the contact form's service dropdown.
+# Rendered between the "Select one..." and "Not Sure Yet" options.
+contact_service_options >>>
+<option value="standard">Standard Tuning</option>
+<option value="advanced">Advanced Service</option>
+<<<
+
+thank_you_body: I'll review your message and get back to you within 48 hours.
