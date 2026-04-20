@@ -260,7 +260,7 @@ def main() -> int:
         ctx.setdefault(f'card_{i}', '')
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    pages = ['index', 'about', 'services', 'contact', 'thank-you']
+    pages = ['index', 'contact', 'thank-you']
     for page in pages:
         src = tpl_dir / f'{page}.html'
         tpl = src.read_text(encoding='utf-8')
