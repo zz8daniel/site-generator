@@ -14,7 +14,7 @@ button_href: {{booking_url}}
 type: cards
 id: services
 theme: light
-eyebrow: Services
+eyebrow: Bicycle
 heading: Services
 intro >>>
 I offer two tiers of service depending on how your bike is running. Not sure what you need? Book a Tune-Up for now, or [Contact me](/contact) and describe what's going on.
@@ -59,9 +59,15 @@ secondary_href: /contact
 ---
 
 page: contact
+type: page-header
+eyebrow: Get in touch
+heading: Contact
+
+---
+
+page: contact
 type: contact-form
 theme: light
-page_title: Contact
 message_label: Tell Me About Your Bike
 message_placeholder: Brand, model, approximate age, last service date, any issues you've noticed...
 service_options >>>

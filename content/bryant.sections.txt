@@ -59,9 +59,15 @@ secondary_href: /contact
 ---
 
 page: contact
+type: page-header
+eyebrow: Get in touch
+heading: Contact
+
+---
+
+page: contact
 type: contact-form
 theme: light
-page_title: Contact
 message_label: Tell Me About Your Piano
 message_placeholder: Brand, serial #, age, last service date, any issues you've noticed...
 service_options >>>
