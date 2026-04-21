@@ -1,0 +1,23 @@
+  <footer class="footer">
+    <div class="container">
+      <div class="grid">
+
+        <div class="col-6">
+          <p class="footer__logo">{{business_name}}</p>
+          <p class="footer__tagline">{{service_area}}</p>
+          <ul class="footer__contact">
+            <li><a href="mailto:{{email}}">{{email}}</a></li>
+            <li><a href="tel:{{phone_dial}}">{{phone_display}}</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6">
+          <ul class="footer__nav">
+            {{footer_nav_items}}
+          </ul>
+        </div>
+
+      </div>
+      <p class="footer__bottom">&copy; {{year}} {{business_name}}. All rights reserved.</p>
+    </div>
+  </footer>

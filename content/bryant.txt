@@ -12,40 +12,14 @@ year: 2025
 
 meta_description: Professional piano tuning and service in Cambridge and Somerville, MA.
 
-hero_title_line1: Bryant Piano
-hero_title_line2: Service
-hero_subtitle: Professional piano tuning & repair. Boston, Cambridge, Somerville
+nav:
+- Home | /#top
+- Services | /#services
+- About | /#about
+- Contact | /contact
+- Book Now | {{booking_url}} | external, button
 
-about_short >>>
-I'm a professional piano technician based in Cambridge, MA. I was trained at <a href="https://nbss.edu/" target="_blank" rel="noopener" style="text-decoration: underline; text-underline-offset: 3px">NBSS</a> in Boston and now service pianos across the greater metropolitan area.
-<<<
-
-about_bio >>>
-I'm David Bryant, a professional piano technician based in Cambridge, MA. I was trained at <a href="https://nbss.edu/" target="_blank" rel="noopener" style="text-decoration: underline; text-underline-offset: 3px">NBSS</a> in Boston and now service pianos across the greater metropolitan area.
-
-Whether your piano needs a standard tuning or a full regulation, I bring the same level of care and precision to every instrument.
-<<<
-
-about_cta_heading: Ready to get started?
-about_cta_body: Book a standard tuning or reach out with questions about your instrument.
-
-services_page_title: Services
-services_intro >>>
-I offer two tiers of service depending on the state of your instrument. Not sure what you need? Book a Standard Tuning for now, or <a href="/contact" style="text-decoration: underline; text-underline-offset: 3px">Contact me</a> any time.
-<<<
-
-services_cta_heading: Let's talk about your piano
-services_cta_body: Tell me a little about your instrument and I'll get back to you ASAP.
-
-contact_page_title: Contact
-contact_message_label: Tell Me About Your Piano
-contact_message_placeholder: Brand, serial #, age, last service date, any issues you've noticed...
-
-# <option> entries for the contact form's service dropdown.
-# Rendered between the "Select one..." and "Not Sure Yet" options.
-contact_service_options >>>
-<option value="standard">Standard Tuning</option>
-<option value="advanced">Advanced Service</option>
-<<<
-
-thank_you_body: I'll review your message and get back to you as soon as I can.
+pages:
+- index     | Bryant Piano Service          | {{meta_description}}
+- contact   | Contact - Bryant Piano Service | Get in touch with Bryant Piano Service.
+- thank-you | Message Sent - Bryant Piano Service

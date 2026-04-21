@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Static site generator driven by a plaintext content file plus an optional
-cards file. Reads templates from ./template-site/ and writes a rendered
-site to the --out directory.
+sections file and cards file(s). Reads templates from ./template-site/ and
+writes a rendered site to the --out directory.
 
-Grammar (both content and cards files):
+Grammar (content, sections, cards files):
   # line comment
   key: value                 single-line scalar
   key >>>                    start multi-line block
@@ -14,17 +14,19 @@ Grammar (both content and cards files):
   - item                     each bullet
   - item
 
-Cards file only:
-  ---                        on its own line, separates cards
+Sections and cards files only:
+  ---                        on its own line, separates records
 
 Tokens in templates:
   {{key}}                    substitute raw value
   {{key_html}}               substitute multi-line block rendered as
                              <p>paragraph</p><p>paragraph</p>
-  {{card_1}}, {{card_2}}...  substitute Nth rendered card, or empty
+  {{nav}} / {{footer}}       rendered nav/footer partials (on page templates)
+  {{sections}}               concatenated sections for this page
+  {{cards_html}}             (inside a cards-type section) rendered cards
 
 Run:
-  python generate.py content/bryant.txt --cards content/bryant.cards.txt --out dist/bryant
+  python generate.py content/bryant.txt --out dist/bryant
 """
 
 import argparse
@@ -47,7 +49,7 @@ def parse(path: Path) -> dict:
 
 def _parse_block(lines: list[str]) -> dict:
     """Parse a list of lines (one 'block' in the grammar). Used for the
-    whole content file and for each card section between --- markers."""
+    whole content file and for each record between --- markers."""
     data: dict = {}
     i = 0
     while i < len(lines):
@@ -104,25 +106,22 @@ def _parse_block(lines: list[str]) -> dict:
     return data
 
 
-def parse_cards(path: Path) -> list[dict]:
-    """Parse a cards file into a list of card dicts. Cards separated by
-    a line containing only '---'."""
+def parse_records(path: Path) -> list[dict]:
+    """Parse a file into a list of records separated by '---' lines.
+    Used for both sections files and cards files."""
     text = path.read_text(encoding='utf-8')
-    # Strip comment-only lines before splitting so a leading '# ...' block
-    # isn't glued to the first card.
-    sections: list[list[str]] = [[]]
+    groups: list[list[str]] = [[]]
     for line in text.splitlines():
         if line.strip() == '---':
-            sections.append([])
+            groups.append([])
         else:
-            sections[-1].append(line)
-    cards = []
-    for lines in sections:
-        # Skip entirely empty/comment-only sections
+            groups[-1].append(line)
+    records = []
+    for lines in groups:
         if not any(l.strip() and not l.strip().startswith('#') for l in lines):
             continue
-        cards.append(_parse_block(lines))
-    return cards
+        records.append(_parse_block(lines))
+    return records
 
 
 def paragraphs_html(text: str) -> str:
@@ -151,8 +150,8 @@ def auto_col_span(n_cards: int) -> int:
 
 
 def render_card(card: dict, col_span: int, card_tpl: str) -> str:
-    """Render one card using the card.html fragment. Optional fields
-    with no value render to empty strings."""
+    """Render one card using the card partial. Optional fields with no
+    value render to empty strings."""
     intro = card.get('intro', '')
     bullets = card.get('bullets') or []
     price = card.get('price', '')
@@ -193,35 +192,102 @@ def _substitute(tpl: str, ctx: dict, strict: bool) -> str:
     return out
 
 
-def build_context(content: dict, cards: list[dict], card_tpl: str) -> dict:
-    """Flatten the parsed content + rendered cards into a single dict
-    of {token_name: string_value} for template substitution."""
+def build_base_context(content: dict) -> dict:
+    """Flatten the parsed content dict into {token: string} for template
+    substitution. Lists render as <li> runs; multi-line blocks get an
+    `_html` companion rendered as <p>-wrapped paragraphs."""
     ctx: dict = {}
-
-    # Scalars and lists from content. Strings pass through; lists render
-    # as <li> items when requested via {{key_li}}.
     for k, v in content.items():
         if isinstance(v, list):
             ctx[k] = ''.join(f'<li>{x}</li>' for x in v)
             ctx[f'{k}_li'] = ctx[k]
         else:
             ctx[k] = v
-            # Multi-line blocks also get a paragraph-rendered companion.
             ctx[f'{k}_html'] = paragraphs_html(v)
-
-    # Rendered card slots. Unused slots (card_N past the card count) are
-    # empty strings — templates can include extra {{card_N}} tokens safely.
-    col = content.get('cards_per_row')
-    col_span = int(col) if col else auto_col_span(len(cards))
-    for i, card in enumerate(cards, start=1):
-        ctx[f'card_{i}'] = render_card(card, col_span, card_tpl)
-
     return ctx
 
 
+def render_nav_items(items: list[str], ctx: dict) -> str:
+    """Render `Label | href | flags` entries as <li> rows.
+    Flags is optional comma-separated: `external`, `button`."""
+    out = []
+    for item in items:
+        parts = [p.strip() for p in item.split('|')]
+        label = parts[0]
+        href = parts[1] if len(parts) > 1 else '#'
+        flags = set(f.strip() for f in parts[2].split(',')) if len(parts) > 2 else set()
+        # Allow tokens like {{booking_url}} inside hrefs.
+        href = _substitute(href, ctx, strict=False)
+        cls = ' class="btn-nav"' if 'button' in flags else ''
+        attrs = ' target="_blank" rel="noopener"' if 'external' in flags else ''
+        out.append(f'<li><a href="{href}"{cls}{attrs}>{label}</a></li>')
+    return '\n        '.join(out)
+
+
+def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
+                    base_ctx: dict) -> str:
+    """Render one section record against its fragment template."""
+    stype = section.get('type')
+    if not stype:
+        raise ValueError(f"section missing required 'type' field: {section!r}")
+    frag_path = tpl_dir / 'sections' / f'{stype}.html'
+    if not frag_path.exists():
+        raise FileNotFoundError(
+            f"no section template at {frag_path} for type '{stype}'")
+    frag = frag_path.read_text(encoding='utf-8')
+
+    # Section-local ctx: global + section fields (section wins). Field
+    # values pass through substitution so `{{booking_url}}` etc. expand.
+    local = dict(base_ctx)
+    # Common optional fields — default to empty so templates can
+    # reference them without every section having to set them.
+    for opt in ('id', 'theme', 'eyebrow', 'alt'):
+        local.setdefault(opt, '')
+    for k, v in section.items():
+        if k == 'type':
+            continue
+        if isinstance(v, list):
+            local[k] = ''.join(f'<li>{x}</li>' for x in v)
+            local[f'{k}_li'] = local[k]
+        else:
+            expanded = _substitute(str(v), base_ctx, strict=False)
+            local[k] = expanded
+            local[f'{k}_html'] = paragraphs_html(expanded)
+            # Auto-derive `{{<foo>_attrs}}` for any `<foo>_href` field so
+            # external URLs open in a new tab and internal ones don't.
+            if k.endswith('_href'):
+                is_external = expanded.startswith(('http://', 'https://'))
+                local[f'{k[:-5]}_attrs'] = (
+                    ' target="_blank" rel="noopener"' if is_external else '')
+
+    # Cards section: render the cards_file into {{cards_html}}.
+    if stype == 'cards' and section.get('cards_file'):
+        cards_path = sections_dir / section['cards_file']
+        cards = parse_records(cards_path)
+        cps = section.get('cards_per_row')
+        col_span = int(cps) if cps else auto_col_span(len(cards))
+        card_tpl = (tpl_dir / 'partials' / 'card.html').read_text(encoding='utf-8')
+        local['cards_html'] = '\n'.join(
+            render_card(c, col_span, card_tpl) for c in cards)
+    else:
+        local.setdefault('cards_html', '')
+
+    return _substitute(frag, local, strict=True)
+
+
+def render_sections_for_page(sections: list[dict], page: str,
+                              tpl_dir: Path, sections_dir: Path,
+                              base_ctx: dict) -> str:
+    page_sections = [s for s in sections if s.get('page', 'index') == page]
+    return '\n'.join(
+        render_section(s, tpl_dir, sections_dir, base_ctx)
+        for s in page_sections
+    )
+
+
 def copy_static(src: Path, out: Path) -> None:
-    """Copy template-site/css and template-site/images verbatim to out,
-    plus netlify.toml if present so the output is a drop-in deployable site."""
+    """Copy css/ and images/ from template dir to out, plus netlify.toml
+    if present."""
     for sub in ('css', 'images'):
         s = src / sub
         d = out / sub
@@ -234,10 +300,32 @@ def copy_static(src: Path, out: Path) -> None:
         shutil.copy2(toml, out / 'netlify.toml')
 
 
+def parse_pages(content: dict) -> list[dict]:
+    """Parse the `pages:` list from content into dicts with
+    {stem, title, description}. Each line: `stem | title | description`
+    (description optional)."""
+    items = content.get('pages') or []
+    if not isinstance(items, list):
+        raise ValueError("content 'pages' must be a bullet list")
+    out = []
+    for item in items:
+        parts = [p.strip() for p in item.split('|')]
+        if len(parts) < 2:
+            raise ValueError(
+                f"page entry needs at least `stem | title`: {item!r}")
+        out.append({
+            'stem': parts[0],
+            'title': parts[1],
+            'description': parts[2] if len(parts) > 2 else '',
+        })
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[1])
     ap.add_argument('content', help='path to the content file')
-    ap.add_argument('--cards', help='path to the cards file (optional)')
+    ap.add_argument('--sections',
+                    help='path to sections file (default: <content>.sections.txt)')
     ap.add_argument('--out', required=True, help='output directory')
     ap.add_argument('--templates', default='template-site',
                     help='path to template directory (default: ./template-site)')
@@ -247,30 +335,48 @@ def main() -> int:
     tpl_dir = Path(args.templates)
     out_dir = Path(args.out)
 
+    if args.sections:
+        sections_path = Path(args.sections)
+    else:
+        # Default: <content-stem>.sections.txt next to the content file.
+        sections_path = content_path.with_suffix('.sections.txt')
+
     content = parse(content_path)
-    cards = parse_cards(Path(args.cards)) if args.cards else []
-    card_tpl = (tpl_dir / 'card.html').read_text(encoding='utf-8')
+    sections = parse_records(sections_path) if sections_path.exists() else []
+    base_ctx = build_base_context(content)
 
-    ctx = build_context(content, cards, card_tpl)
-
-    # Extra card slots referenced in pages but not present in cards file
-    # render to empty strings (non-strict substitution only for card_N).
-    max_card_slot = 99  # well above any reasonable page count
-    for i in range(1, max_card_slot + 1):
-        ctx.setdefault(f'card_{i}', '')
+    # Nav + footer partials rendered once into tokens available on every page.
+    nav_items = content.get('nav') or []
+    if isinstance(nav_items, list):
+        base_ctx['nav_items'] = render_nav_items(nav_items, base_ctx)
+        base_ctx['footer_nav_items'] = base_ctx['nav_items']
+    for partial in ('nav', 'footer'):
+        p = tpl_dir / 'partials' / f'{partial}.html'
+        if p.exists():
+            base_ctx[partial] = _substitute(
+                p.read_text(encoding='utf-8'), base_ctx, strict=True)
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    pages = ['index', 'contact', 'thank-you']
+    pages = parse_pages(content)
+    if not pages:
+        print("error: content file has no `pages:` list", file=sys.stderr)
+        return 1
+    layout_tpl = (tpl_dir / 'layout.html').read_text(encoding='utf-8')
+    sections_dir = sections_path.parent
     for page in pages:
-        src = tpl_dir / f'{page}.html'
-        tpl = src.read_text(encoding='utf-8')
+        stem = page['stem']
+        page_ctx = dict(base_ctx)
+        page_ctx['title'] = page['title']
+        page_ctx['description'] = page['description']
+        page_ctx['sections'] = render_sections_for_page(
+            sections, stem, tpl_dir, sections_dir, base_ctx)
         try:
-            rendered = _substitute(tpl, ctx, strict=True)
+            rendered = _substitute(layout_tpl, page_ctx, strict=True)
         except KeyError as e:
-            print(f"error rendering {page}.html: {e}", file=sys.stderr)
+            print(f"error rendering {stem}.html: {e}", file=sys.stderr)
             return 1
-        (out_dir / f'{page}.html').write_text(rendered, encoding='utf-8')
-        print(f"wrote {out_dir / (page + '.html')}")
+        (out_dir / f'{stem}.html').write_text(rendered, encoding='utf-8')
+        print(f"wrote {out_dir / (stem + '.html')}")
 
     copy_static(tpl_dir, out_dir)
     print(f"copied css/ and images/ to {out_dir}")

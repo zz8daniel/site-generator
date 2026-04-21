@@ -1,0 +1,13 @@
+  <nav class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="/">{{business_name}}</a>
+      <button class="nav__toggle" aria-label="Toggle menu"
+        onclick="this.closest('nav').querySelector('.nav__links').classList.toggle('is-open')">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links">
+        {{nav_items}}
+      </ul>
+    </div>
+  </nav>
+  <div class="nav-spacer"></div>
