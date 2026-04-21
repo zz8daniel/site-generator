@@ -33,6 +33,7 @@ import argparse
 import re
 import shutil
 import sys
+import time
 from pathlib import Path
 
 
@@ -349,26 +350,8 @@ def parse_pages(content: dict) -> list[dict]:
     return out
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__.split('\n')[1])
-    ap.add_argument('content', help='path to the content file')
-    ap.add_argument('--sections',
-                    help='path to sections file (default: <content>.sections.txt)')
-    ap.add_argument('--out', required=True, help='output directory')
-    ap.add_argument('--templates', default='template-site',
-                    help='path to template directory (default: ./template-site)')
-    args = ap.parse_args()
-
-    content_path = Path(args.content)
-    tpl_dir = Path(args.templates)
-    out_dir = Path(args.out)
-
-    if args.sections:
-        sections_path = Path(args.sections)
-    else:
-        # Default: <content-stem>.sections.txt next to the content file.
-        sections_path = content_path.with_suffix('.sections.txt')
-
+def build(content_path: Path, sections_path: Path, tpl_dir: Path,
+          out_dir: Path) -> int:
     content = parse(content_path)
     sections = parse_records(sections_path) if sections_path.exists() else []
     base_ctx = build_base_context(content)
@@ -409,6 +392,73 @@ def main() -> int:
     copy_static(tpl_dir, out_dir)
     print(f"copied css/ and images/ to {out_dir}")
     return 0
+
+
+def snapshot_mtimes(content_path: Path, sections_path: Path,
+                    tpl_dir: Path) -> dict:
+    """Collect {path: mtime} for every file the build reads: content file,
+    sections file, sibling .txt files (cards), and everything under the
+    template dir."""
+    paths: set[Path] = {content_path}
+    if sections_path.exists():
+        paths.add(sections_path)
+    paths.update(content_path.parent.glob('*.txt'))
+    if tpl_dir.exists():
+        paths.update(p for p in tpl_dir.rglob('*') if p.is_file())
+    return {p: p.stat().st_mtime for p in paths if p.exists()}
+
+
+def watch_and_build(content_path: Path, sections_path: Path,
+                    tpl_dir: Path, out_dir: Path) -> int:
+    last = snapshot_mtimes(content_path, sections_path, tpl_dir)
+    rc = build(content_path, sections_path, tpl_dir, out_dir)
+    print(f"watching {tpl_dir}/ and {content_path.parent}/*.txt — Ctrl+C to stop")
+    try:
+        while True:
+            time.sleep(0.5)
+            current = snapshot_mtimes(content_path, sections_path, tpl_dir)
+            if current == last:
+                continue
+            changed = [
+                str(p) for p in set(current) | set(last)
+                if current.get(p) != last.get(p)
+            ]
+            print(f"\nchange detected: {', '.join(sorted(changed))}")
+            last = current
+            try:
+                build(content_path, sections_path, tpl_dir, out_dir)
+            except Exception as e:
+                print(f"build error: {e}", file=sys.stderr)
+    except KeyboardInterrupt:
+        print("\nstopped.")
+        return rc
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split('\n')[1])
+    ap.add_argument('content', help='path to the content file')
+    ap.add_argument('--sections',
+                    help='path to sections file (default: <content>.sections.txt)')
+    ap.add_argument('--out', required=True, help='output directory')
+    ap.add_argument('--templates', default='template-site',
+                    help='path to template directory (default: ./template-site)')
+    ap.add_argument('--watch', action='store_true',
+                    help='rebuild on file change until interrupted')
+    args = ap.parse_args()
+
+    content_path = Path(args.content)
+    tpl_dir = Path(args.templates)
+    out_dir = Path(args.out)
+
+    if args.sections:
+        sections_path = Path(args.sections)
+    else:
+        # Default: <content-stem>.sections.txt next to the content file.
+        sections_path = content_path.with_suffix('.sections.txt')
+
+    if args.watch:
+        return watch_and_build(content_path, sections_path, tpl_dir, out_dir)
+    return build(content_path, sections_path, tpl_dir, out_dir)
 
 
 if __name__ == '__main__':
