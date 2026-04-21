@@ -381,13 +381,18 @@ def build(content_path: Path, sections_path: Path, tpl_dir: Path,
         page_ctx['description'] = page['description']
         page_ctx['sections'] = render_sections_for_page(
             sections, stem, tpl_dir, sections_dir, base_ctx)
+        # Write index at the publish root; every other page as
+        # <stem>/index.html so it's served at /<stem> on any static host.
+        out_path = (out_dir / 'index.html' if stem == 'index'
+                    else out_dir / stem / 'index.html')
         try:
             rendered = _substitute(layout_tpl, page_ctx, strict=True)
         except KeyError as e:
-            print(f"error rendering {stem}.html: {e}", file=sys.stderr)
+            print(f"error rendering {out_path}: {e}", file=sys.stderr)
             return 1
-        (out_dir / f'{stem}.html').write_text(rendered, encoding='utf-8')
-        print(f"wrote {out_dir / (stem + '.html')}")
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(rendered, encoding='utf-8')
+        print(f"wrote {out_path}")
 
     copy_static(tpl_dir, out_dir)
     print(f"copied css/ and images/ to {out_dir}")
