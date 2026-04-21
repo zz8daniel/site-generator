@@ -124,6 +124,26 @@ def parse_records(path: Path) -> list[dict]:
     return records
 
 
+_MD_LINK_RE = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
+
+
+def markdown_links(text: str) -> str:
+    """Turn `[label](href)` into `<a class="link" href="href" ...>label</a>`.
+    External URLs (http/https) also get `target="_blank" rel="noopener"`.
+    HTML `<a>` tags in content are left untouched."""
+    if not text or '[' not in text:
+        return text
+
+    def sub(m: re.Match) -> str:
+        label = m.group(1)
+        href = m.group(2)
+        is_ext = href.startswith(('http://', 'https://'))
+        attrs = ' target="_blank" rel="noopener"' if is_ext else ''
+        return f'<a class="link" href="{href}"{attrs}>{label}</a>'
+
+    return _MD_LINK_RE.sub(sub, text)
+
+
 def paragraphs_html(text: str) -> str:
     """Render a multi-line block as <p>para</p><p>para</p> (paragraphs
     separated by blank lines). Single paragraphs become one <p>."""
@@ -131,6 +151,12 @@ def paragraphs_html(text: str) -> str:
         return ''
     paragraphs = re.split(r'\n\s*\n', text.strip())
     return '\n'.join(f'<p>{p.strip()}</p>' for p in paragraphs if p.strip())
+
+
+def render_li(items: list[str]) -> str:
+    """Render a bullet list as `<li>...</li>` runs, with markdown link
+    expansion applied to each item."""
+    return ''.join(f'<li>{markdown_links(x)}</li>' for x in items)
 
 
 def auto_col_span(n_cards: int) -> int:
@@ -152,16 +178,13 @@ def auto_col_span(n_cards: int) -> int:
 def render_card(card: dict, col_span: int, card_tpl: str) -> str:
     """Render one card using the card partial. Optional fields with no
     value render to empty strings."""
-    intro = card.get('intro', '')
+    intro = markdown_links(card.get('intro', ''))
     bullets = card.get('bullets') or []
-    price = card.get('price', '')
-    name = card.get('name', '')
+    price = markdown_links(card.get('price', ''))
+    name = markdown_links(card.get('name', ''))
 
     intro_block = f'<p>{intro}</p>' if intro else ''
-    bullets_block = ''
-    if bullets:
-        lis = ''.join(f'<li>{b}</li>' for b in bullets)
-        bullets_block = f'<ul>{lis}</ul>'
+    bullets_block = f'<ul>{render_li(bullets)}</ul>' if bullets else ''
     price_block = f'<p class="card__price">{price}</p>' if price else ''
 
     return _substitute(card_tpl, {
@@ -199,11 +222,12 @@ def build_base_context(content: dict) -> dict:
     ctx: dict = {}
     for k, v in content.items():
         if isinstance(v, list):
-            ctx[k] = ''.join(f'<li>{x}</li>' for x in v)
+            ctx[k] = render_li(v)
             ctx[f'{k}_li'] = ctx[k]
         else:
-            ctx[k] = v
-            ctx[f'{k}_html'] = paragraphs_html(v)
+            expanded = markdown_links(v)
+            ctx[k] = expanded
+            ctx[f'{k}_html'] = paragraphs_html(expanded)
     return ctx
 
 
@@ -247,10 +271,14 @@ def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
         if k == 'type':
             continue
         if isinstance(v, list):
-            local[k] = ''.join(f'<li>{x}</li>' for x in v)
+            local[k] = render_li(v)
             local[f'{k}_li'] = local[k]
         else:
             expanded = _substitute(str(v), base_ctx, strict=False)
+            # `*_href` stays raw (it's a URL, not prose); everything else
+            # gets markdown-link expansion.
+            if not k.endswith('_href'):
+                expanded = markdown_links(expanded)
             local[k] = expanded
             local[f'{k}_html'] = paragraphs_html(expanded)
             # Auto-derive `{{<foo>_attrs}}` for any `<foo>_href` field so
