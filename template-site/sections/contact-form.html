@@ -2,27 +2,27 @@
     <div class="container">
       <div class="grid">
 
-        <div class="col-4">
-          <p class="label muted" style="margin-bottom: 1rem">Direct Contact</p>
+        <div class="col-4 contact-info">
+          <p class="label muted">Direct Contact</p>
 
-          <p style="margin-bottom: 0.4rem; font-weight: 600">Email</p>
-          <p style="margin-bottom: 1.5rem">
+          <p class="contact-info__heading">Email</p>
+          <p class="contact-info__value">
             <a class="link" href="mailto:{{email}}">{{email}}</a>
           </p>
 
-          <p style="margin-bottom: 0.4rem; font-weight: 600">Phone</p>
-          <p style="margin-bottom: 2rem">
+          <p class="contact-info__heading">Phone</p>
+          <p class="contact-info__value contact-info__value--last">
             <a href="tel:{{phone_dial}}">{{phone_display}}</a>
           </p>
 
-          <p class="label muted" style="margin-bottom: 1rem">Service Area</p>
-          <p style="opacity: 0.7">{{service_area}}</p>
+          <p class="label muted">Service Area</p>
+          <p class="contact-info__service-area">{{service_area}}</p>
         </div>
 
         <div class="col-8">
           <form class="form" name="contact" method="POST" netlify netlify-honeypot="bot-field" action="/thank-you">
             <input type="hidden" name="form-name" value="contact">
-            <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+            <p class="form__honeypot"><label>Don't fill this out: <input name="bot-field"></label></p>
 
             <div class="form-row">
               <div class="field">

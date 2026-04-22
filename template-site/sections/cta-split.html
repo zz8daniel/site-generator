@@ -1,17 +1,17 @@
   <section id="{{id}}" class="section section--{{theme}}">
     <div class="container">
-      <div class="grid" style="align-items: center; gap: clamp(2rem, 4vw, 4rem)">
+      <div class="grid cta-split__grid">
 
-        <div class="col-5 img-card" style="height: 380px">
+        <div class="col-5 img-card cta-split__image">
           <img src="./images/{{image}}" alt="{{alt}}">
         </div>
 
         <div class="col-7">
-          <h2 style="margin-top: 0; margin-bottom: 1.5rem">{{heading}}</h2>
-          <p style="font-size: 1.05rem; opacity: 0.8; margin-bottom: 2rem">
+          <h2>{{heading}}</h2>
+          <p class="cta-split__body">
             {{body}}
           </p>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap">
+          <div class="cta-split__actions">
             <a class="btn btn--white" href="{{primary_href}}"{{primary_attrs}}>{{primary_label}}</a>
             <a class="btn btn--ghost-white" href="{{secondary_href}}"{{secondary_attrs}}>{{secondary_label}}</a>
           </div>

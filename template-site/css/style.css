@@ -163,6 +163,28 @@ p {
 .section--dark hr          { border-color: var(--dark-border); }
 .section--dark .card       { border-color: var(--dark-border); }
 
+/* Shared in-section defaults */
+.section h1,
+.section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.section .label.muted {
+  margin-bottom: 0.5rem;
+}
+
+.prose {
+  font-size: 1.05rem;
+  opacity: 0.8;
+  line-height: 1.75;
+  max-width: 65ch;
+}
+
+.prose-block {
+  max-width: 65ch;
+}
+
 
 /* -------------------------------------------------------------
    5. Nav
@@ -356,6 +378,80 @@ p {
   height: 100%;
   object-fit: cover;
   object-position: center 40%;
+}
+
+/* Hero-message section */
+.section--hero-message {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-message__inner {
+  text-align: center;
+}
+
+.hero-message__title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.hero-message__body {
+  font-size: 1.05rem;
+  opacity: 0.8;
+  margin: 0 auto 2.5rem;
+}
+
+/* CTA-split section */
+.cta-split__grid {
+  align-items: center;
+  gap: clamp(2rem, 4vw, 4rem);
+}
+
+.cta-split__image {
+  height: 380px;
+}
+
+.cta-split__body {
+  font-size: 1.05rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.cta-split__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Cards section CTA row */
+.cards__cta {
+  margin-top: 0.5rem;
+}
+
+/* Contact-info column (in contact-form) */
+.contact-info .label.muted {
+  margin-bottom: 1rem;
+}
+
+.contact-info__heading {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.contact-info__value {
+  margin-bottom: 1.5rem;
+}
+
+.contact-info__value--last {
+  margin-bottom: 2rem;
+}
+
+.contact-info__service-area {
+  opacity: 0.7;
+}
+
+.form__honeypot {
+  display: none;
 }
 
 
