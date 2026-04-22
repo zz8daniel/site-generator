@@ -13,7 +13,8 @@ service_area: Boston, Cambridge, Somerville, MA
 email: dbryant5598@gmail.com
 phone: 6177105598
 booking_url: https://gazelleapp.io/scheduling/9RZL3PMt2mm32mnJ4fjXTSyx
-year: 2025
+year: 2026
+color_scheme: auto
 
 meta_description: Professional piano tuning and service in Cambridge and Somerville, MA.
 
