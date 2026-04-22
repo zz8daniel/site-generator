@@ -28,7 +28,6 @@ cta_href: {{booking_url}}
 type: banner-image
 image: services.jpg
 alt:
-object_position: center 40%
 
 ---
 
