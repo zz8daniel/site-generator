@@ -34,7 +34,13 @@ import re
 import shutil
 import sys
 import time
+from functools import lru_cache
 from pathlib import Path
+
+
+@lru_cache(maxsize=None)
+def _read_template(path: Path) -> str:
+    return path.read_text(encoding='utf-8')
 
 
 def parse(path: Path) -> dict:
@@ -259,7 +265,7 @@ def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
     if not frag_path.exists():
         raise FileNotFoundError(
             f"no section template at {frag_path} for type '{stype}'")
-    frag = frag_path.read_text(encoding='utf-8')
+    frag = _read_template(frag_path)
 
     # Section-local ctx: global + section fields (section wins). Field
     # values pass through substitution so `{{booking_url}}` etc. expand.
@@ -275,7 +281,7 @@ def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
             local[k] = render_li(v)
             local[f'{k}_li'] = local[k]
         else:
-            expanded = _substitute(str(v), base_ctx, strict=False)
+            expanded = _substitute(v, base_ctx, strict=False)
             # `*_href` stays raw (it's a URL, not prose); everything else
             # gets markdown-link expansion.
             if not k.endswith('_href'):
@@ -295,7 +301,7 @@ def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
         cards = parse_records(cards_path)
         cps = section.get('cards_per_row')
         col_span = int(cps) if cps else auto_col_span(len(cards))
-        card_tpl = (tpl_dir / 'partials' / 'card.html').read_text(encoding='utf-8')
+        card_tpl = _read_template(tpl_dir / 'partials' / 'card.html')
         local['cards_html'] = '\n'.join(
             render_card(c, col_span, card_tpl) for c in cards)
     else:
@@ -351,7 +357,10 @@ def parse_pages(content: dict) -> list[dict]:
 
 
 def build(content_path: Path, sections_path: Path, tpl_dir: Path,
-          out_dir: Path) -> int:
+          out_dir: Path, *, copy_static_files: bool = True) -> int:
+    # Template cache is per-build: content edits shouldn't see stale
+    # template contents on the next watch-mode rebuild.
+    _read_template.cache_clear()
     content = parse(content_path)
     sections = parse_records(sections_path) if sections_path.exists() else []
     base_ctx = build_base_context(content)
@@ -365,14 +374,14 @@ def build(content_path: Path, sections_path: Path, tpl_dir: Path,
         p = tpl_dir / 'partials' / f'{partial}.html'
         if p.exists():
             base_ctx[partial] = _substitute(
-                p.read_text(encoding='utf-8'), base_ctx, strict=True)
+                _read_template(p), base_ctx, strict=True)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     pages = parse_pages(content)
     if not pages:
         print("error: content file has no `pages:` list", file=sys.stderr)
         return 1
-    layout_tpl = (tpl_dir / 'layout.html').read_text(encoding='utf-8')
+    layout_tpl = _read_template(tpl_dir / 'layout.html')
     sections_dir = sections_path.parent
     for page in pages:
         stem = page['stem']
@@ -381,8 +390,6 @@ def build(content_path: Path, sections_path: Path, tpl_dir: Path,
         page_ctx['description'] = page['description']
         page_ctx['sections'] = render_sections_for_page(
             sections, stem, tpl_dir, sections_dir, base_ctx)
-        # Write index at the publish root; every other page as
-        # <stem>/index.html so it's served at /<stem> on any static host.
         out_path = (out_dir / 'index.html' if stem == 'index'
                     else out_dir / stem / 'index.html')
         try:
@@ -394,44 +401,47 @@ def build(content_path: Path, sections_path: Path, tpl_dir: Path,
         out_path.write_text(rendered, encoding='utf-8')
         print(f"wrote {out_path}")
 
-    copy_static(tpl_dir, out_dir)
-    print(f"copied css/ and images/ to {out_dir}")
+    if copy_static_files:
+        copy_static(tpl_dir, out_dir)
+        print(f"copied css/ and images/ to {out_dir}")
     return 0
 
 
-def snapshot_mtimes(content_path: Path, sections_path: Path,
-                    tpl_dir: Path) -> dict:
-    """Collect {path: mtime} for every file the build reads: content file,
-    sections file, sibling .txt files (cards), and everything under the
-    template dir."""
-    paths: set[Path] = {content_path}
-    if sections_path.exists():
-        paths.add(sections_path)
-    paths.update(content_path.parent.glob('*.txt'))
+def snapshot_mtimes(content_dir: Path, tpl_dir: Path) -> dict:
+    """Collect {path: mtime} for every source file the build might read:
+    all .txt in the content dir, plus .html/.css under the template dir.
+    Binary assets (images) aren't watched — they're only copied on demand."""
+    paths: set[Path] = set(content_dir.glob('*.txt'))
     if tpl_dir.exists():
-        paths.update(p for p in tpl_dir.rglob('*') if p.is_file())
+        for pattern in ('*.html', '*.css'):
+            paths.update(tpl_dir.rglob(pattern))
     return {p: p.stat().st_mtime for p in paths if p.exists()}
 
 
 def watch_and_build(content_path: Path, sections_path: Path,
                     tpl_dir: Path, out_dir: Path) -> int:
-    last = snapshot_mtimes(content_path, sections_path, tpl_dir)
+    content_dir = content_path.parent
+    css_dir = tpl_dir / 'css'
+    last = snapshot_mtimes(content_dir, tpl_dir)
     rc = build(content_path, sections_path, tpl_dir, out_dir)
-    print(f"watching {tpl_dir}/ and {content_path.parent}/*.txt — Ctrl+C to stop")
+    print(f"watching {tpl_dir}/ and {content_dir}/*.txt — Ctrl+C to stop")
     try:
         while True:
             time.sleep(0.5)
-            current = snapshot_mtimes(content_path, sections_path, tpl_dir)
+            current = snapshot_mtimes(content_dir, tpl_dir)
             if current == last:
                 continue
-            changed = [
-                str(p) for p in set(current) | set(last)
-                if current.get(p) != last.get(p)
-            ]
-            print(f"\nchange detected: {', '.join(sorted(changed))}")
+            changed = {p for p in set(current) | set(last)
+                       if current.get(p) != last.get(p)}
+            print(f"\nchange detected: {', '.join(sorted(str(p) for p in changed))}")
             last = current
+            # Skip the css/images copy on content-only edits — otherwise
+            # rmtree+copytree fires on every keystroke save, which also
+            # kicks the netlify dev file watcher.
+            copy_css = any(css_dir in p.parents for p in changed)
             try:
-                build(content_path, sections_path, tpl_dir, out_dir)
+                build(content_path, sections_path, tpl_dir, out_dir,
+                      copy_static_files=copy_css)
             except Exception as e:
                 print(f"build error: {e}", file=sys.stderr)
     except KeyboardInterrupt:
