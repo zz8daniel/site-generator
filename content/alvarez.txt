@@ -1,12 +1,17 @@
 # Alvarez Cycle Works - site content
+#
+# This file has three parts, separated by lines containing only `---`:
+#   1. Global content (scalars, nav, pages) — the first record.
+#   2. Section records — `type: <fragment>`, rendered into pages.
+#   3. Card records — `type: card` with a unique `name:`, referenced
+#      by name from cards-type sections.
 
 business_name: Alvarez Cycle Works
 owner_name: Rita Alvarez
 location: Portland, OR
 service_area: Portland, Beaverton, Lake Oswego, OR
 email: rita@alvarezcycleworks.com
-phone_display: (503) 555-0142
-phone_dial: +15035550142
+phone: 5025550142
 booking_url: https://alvarezcycleworks.com/book
 year: 2026
 
@@ -23,3 +28,115 @@ pages:
 - index     | Alvarez Cycle Works          | {{meta_description}}
 - contact   | Contact - Alvarez Cycle Works | Get in touch with Alvarez Cycle Works.
 - thank-you | Message Sent - Alvarez Cycle Works
+
+---
+
+# Home page sections (in render order)
+
+type: hero
+id: top
+bg_image: hero.jpg
+title_line1: Alvarez Cycle
+title_line2: Works
+subtitle: Independent bicycle mechanic. Tune-ups, overhauls & mobile service in Portland
+button_label: Book Now
+button_href: {{booking_url}}
+
+---
+
+type: cards
+id: services
+theme: light
+eyebrow: Bicycle
+heading: Services
+intro >>>
+I offer two tiers of service depending on how your bike is running. Not sure what you need? Book a Tune-Up for now, or [Contact me](/contact) and describe what's going on.
+<<<
+cards:
+- Tune-Up
+- Full Overhaul
+cta_label: Book Now
+cta_href: {{booking_url}}
+
+---
+
+type: card
+name: Tune-Up
+intro: A full inspection and adjustment to get your bike shifting, braking, and rolling smoothly. Includes:
+bullets:
+- Shifting and brake adjustment
+- Wheel truing (minor)
+- Drivetrain cleaning and lube
+- Tire pressure and torque check
+
+---
+
+type: card
+name: Full Overhaul
+intro: "A deep service for tired bikes. You may need this if your bike:"
+bullets:
+- Hasn't been serviced in more than 2 years
+- Makes grinding or clicking noises
+- Has a drivetrain that slips under load
+- Needs bearings repacked or replaced
+
+---
+
+type: banner-image
+image: services.jpg
+alt:
+
+---
+
+type: prose
+id: about
+theme: dark
+eyebrow: About
+heading: Rita Alvarez
+body >>>
+I'm Rita Alvarez, an independent bicycle mechanic based in Portland, OR. I trained at [UBI](https://www.uccr.edu/) in Ashland and have been wrenching professionally for over a decade.
+
+Whether you ride a daily commuter, a carbon race bike, or a loaded touring rig, I treat every bike like it's going out on a long trip tomorrow. No upsells, no mystery charges — just careful work and a clear explanation of what I did and why.
+<<<
+
+---
+
+type: cta-split
+theme: dark
+image: about.jpg
+alt:
+heading: Ready to get rolling?
+body: Book a tune-up or get in touch about a bigger project.
+primary_label: Book Now
+primary_href: {{booking_url}}
+secondary_label: Get In Touch
+secondary_href: /contact
+
+---
+
+page: contact
+type: page-header
+heading: Contact
+
+---
+
+page: contact
+type: contact-form
+theme: light
+message_label: Tell Me About Your Bike
+message_placeholder: Brand, model, approximate age, last service date, any issues you've noticed...
+service_options >>>
+<option value="tuneup">Tune-Up</option>
+<option value="overhaul">Full Overhaul</option>
+<<<
+
+---
+
+page: thank-you
+type: hero-message
+theme: dark
+eyebrow: Message Received
+heading: Thank You
+body: I'll review your message and get back to you as soon as I can.
+button_label: Back to Home
+button_href: /

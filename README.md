@@ -1,113 +1,188 @@
 # site-generator
 
-A zero-dependency static site generator. One plaintext content file + a cards
-file produce a full Netlify-ready site from a reusable HTML/CSS scaffold.
+A zero-dependency static site generator. One plaintext content file
+produces a full Netlify-ready site from a reusable HTML/CSS scaffold.
 
 ## Quick start
 
 ```bash
-python generate.py content/bryant.txt --cards content/bryant.cards.txt --out dist/bryant
+python generate.py content/bryant.txt --out dist/bryant
 cd dist/bryant && netlify dev
 ```
 
-Open the URL Netlify prints (typically http://localhost:8888).
+Open the URL Netlify prints (typically http://localhost:8888). If you
+don't have the Netlify CLI, `python -m http.server 8000` also works —
+pretty URLs like `/contact` resolve because pages are written as
+`<stem>/index.html`.
 
-`netlify dev` handles the extensionless URLs (`/services`, `/about`) and
-the contact form. If you don't have the Netlify CLI (`npm i -g netlify-cli`),
-you can fall back to `python -m http.server 8000`, but nav links to
-`/services` etc. will 404 without it.
+Pass `--watch` to rebuild on every save.
 
 ## Repo layout
 
 ```
 site-generator/
 ├── template-site/          # HTML/CSS scaffold with {{tokens}}
-│   ├── card.html           # single-card fragment
-│   ├── index.html
-│   ├── about.html
-│   ├── services.html
-│   ├── contact.html
-│   ├── thank-you.html
+│   ├── layout.html         # the single page shell
 │   ├── netlify.toml        # copied into each dist/<name>/ output
+│   ├── partials/           # nav.html, footer.html, card.html
+│   ├── sections/           # one fragment per section type
 │   ├── css/
 │   └── images/
 ├── content/
-│   ├── bryant.txt          # site-wide fields
-│   └── bryant.cards.txt    # one card per section, split by `---`
+│   ├── bryant.txt          # one file per site, everything inside
+│   └── alvarez.txt
 └── generate.py
 ```
 
-## Content file grammar
+## The one content file
+
+Every site is described by a single `content/<name>.txt`. Records are
+separated by `---` on its own line:
+
+1. **First record** — global content: scalars, `nav:`, `pages:`.
+2. **Every record after that** — either a *section* (`type: <fragment>`,
+   rendered into a page) or a *card* (`type: card` with a unique
+   `name:`, pulled in by name from a `cards`-type section).
+
+Sketch:
 
 ```
-# comments start with #
-
-business_name: Bryant Piano Service     # single-line scalar
+business_name: Bryant Piano Service
 email: hello@example.com
 
-about_bio >>>                           # multi-line block
-I'm a piano technician based in Cambridge.
+nav:
+- Home | /#top
+- Contact | /contact
 
-A blank line inside the block becomes a new paragraph.
-<<<
+pages:
+- index   | Bryant Piano Service | Professional piano tuning.
+- contact | Contact - Bryant
 
-bullets:                                # bullet list
-- First item
-- Second item
+---
+
+type: hero
+id: top
+title_line1: Bryant Piano
+title_line2: Service
+subtitle: Tuning & repair in Cambridge, MA.
+button_label: Book Now
+button_href: {{booking_url}}
+
+---
+
+type: cards
+id: services
+theme: light
+heading: Services
+cards:
+- Standard Tuning
+- Advanced Service
+
+---
+
+type: card
+name: Standard Tuning
+intro: Professional aural tuning.
+bullets:
+- Equal temperament
+- Historic temperaments
+
+---
+
+type: card
+name: Advanced Service
+intro: "Full regulation, plus tuning."
+bullets:
+- Has not been serviced in 2+ years
 ```
 
-Quoted strings (`"..."` / `'...'`) are supported when you need leading/trailing
-whitespace or embedded colons to survive parsing.
+## Grammar
 
-## Cards file grammar
+```
+# line comment
+key: value                 single-line scalar
+key >>>                    start multi-line block (paragraphs separated
+...                        by blank lines; newlines preserved)
+<<<
+key:                       start a bullet list
+- item
+- item
+---                        separates records (standalone on its own line)
+```
 
-Same grammar as the content file, plus: a line containing only `---` separates
-cards. Each card may set any subset of:
+Quoted strings (`"..."` / `'...'`) are supported when you need leading/
+trailing whitespace or embedded colons to survive parsing.
 
-- `name` (heading)
-- `intro` (paragraph under the heading)
-- `bullets` (list)
-- `price` (small price label above the heading)
-
-Missing fields are simply omitted from the rendered card.
+Inside any value, `{{token}}` expands against the global content (so
+`button_href: {{booking_url}}` works inside a section). `[label](href)`
+becomes an anchor tag.
 
 ## Template tokens
 
-In any template file under `template-site/`:
+Inside `template-site/layout.html`:
 
-- `{{business_name}}`, `{{email}}`, ... — any scalar from the content file
-- `{{about_bio_html}}` — any multi-line block rendered as `<p>...</p>` per
-  paragraph. Append `_html` to any multi-line key.
-- `{{card_1}}`, `{{card_2}}`, ... — Nth rendered card, or empty string if
-  the cards file has fewer than N cards. Include as many slots as you
-  want to support.
+- `{{title}}`, `{{description}}` — from the matching `pages:` entry
+- `{{nav}}`, `{{footer}}` — rendered partials
+- `{{sections}}` — concatenated sections for this page
 
-Column span for cards is chosen automatically: 1 card = col-12,
-2 = col-6, 3 = col-4, 4 = col-3, 5+ = col-4 wrapping. Override with
-`cards_per_row: 3` in the content file.
+Inside `template-site/sections/<type>.html`:
 
-## Adding pages
+- `{{<field>}}` — any field from the section record (section fields
+  win over globals)
+- `{{<field>_html}}` — multi-line block rendered as `<p>...</p>` per
+  paragraph
+- `{{<field>_li}}` — bullet list rendered as `<li>...</li>` runs
+- `{{cards_html}}` — (inside a `cards` section) the rendered cards
+- `{{<foo>_attrs}}` — auto-derived from any `<foo>_href` field; adds
+  `target="_blank" rel="noopener"` when the URL is external
 
-1. Drop a new `foo.html` into `template-site/` using `{{tokens}}` as
-   needed.
-2. Add `foo` to the `pages` list in `generate.py`.
-3. Add a link to it in the nav/footer of the other templates.
+Common optional fields default to empty so fragments can reference
+them unconditionally: `id`, `theme`, `eyebrow`, `alt`.
+
+## Pages
+
+A `pages:` entry is `stem | title | description`. The `index` stem
+renders as `dist/<name>/index.html`; every other stem renders as
+`<stem>/index.html` (pretty-URL friendly).
+
+Section records default to `page: index`. Add `page: contact` (etc.)
+to route a section to a different page.
+
+## Cards
+
+Define each card once as a `type: card` record with a unique `name:`.
+A `cards`-type section references them in order via a bullet list:
+
+```
+type: cards
+heading: Services
+cards:
+- Standard Tuning
+- Advanced Service
+```
+
+Column span is auto-chosen from count (1→12, 2→6, 3→4, 4→3, 5+→4
+wrapping). Override with `cards_per_row: 3` on the section.
 
 ## Adding a new site
 
-1. Copy `content/bryant.txt` and `content/bryant.cards.txt` to new
-   files (e.g. `content/acme.txt`, `content/acme.cards.txt`).
-2. Edit the field values.
-3. Swap the images in `template-site/images/` or a per-site image
-   folder (pass `--templates` to point at an alternate scaffold).
-4. Regenerate: `python generate.py content/acme.txt --cards content/acme.cards.txt --out dist/acme`.
+```bash
+cp content/bryant.txt content/acme.txt
+# edit fields; swap template-site/images/*.jpg if desired
+python generate.py content/acme.txt --out dist/acme
+```
+
+Pass `--templates path/to/other/template-site` to point at an
+alternate scaffold (e.g., different images per site).
 
 ## Deploying to Netlify
 
-The output of `--out` is pure static files. Either:
+`dist/<name>/` is pure static files, ready to deploy. Either point
+Netlify's publish directory at it directly, or set a build command:
 
-- Point Netlify's publish directory at `dist/<site>/` in a separate repo that
-  only contains the generated output, or
-- Keep source + output together and set a Netlify build command
-  (`python generate.py content/<site>.txt --cards content/<site>.cards.txt --out dist/<site>`)
-  with publish directory `dist/<site>/`.
+```
+python generate.py content/<name>.txt --out dist/<name>
+```
+
+with publish directory `dist/<name>/`. `netlify.toml` is copied into
+each output directory automatically.

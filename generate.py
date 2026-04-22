@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Static site generator driven by a plaintext content file plus an optional
-sections file and cards file(s). Reads templates from ./template-site/ and
-writes a rendered site to the --out directory.
+Static site generator driven by a single plaintext content file.
+Reads templates from ./template-site/ and writes a rendered site to the
+--out directory.
 
-Grammar (content, sections, cards files):
+Grammar:
   # line comment
   key: value                 single-line scalar
   key >>>                    start multi-line block
@@ -13,9 +13,13 @@ Grammar (content, sections, cards files):
   key:                       start a bullet list
   - item                     each bullet
   - item
-
-Sections and cards files only:
   ---                        on its own line, separates records
+
+File structure:
+  The first record (everything before the first `---`) is global content:
+  scalars, `nav:`, `pages:`. Every record after that is either a section
+  (rendered into pages by `type:`) or a card (`type: card` with a unique
+  `name:`, referenced by `cards`-type sections).
 
 Tokens in templates:
   {{key}}                    substitute raw value
@@ -41,17 +45,6 @@ from pathlib import Path
 @lru_cache(maxsize=None)
 def _read_template(path: Path) -> str:
     return path.read_text(encoding='utf-8')
-
-
-def parse(path: Path) -> dict:
-    """Parse a content file into a dict of {key: value}.
-
-    Values are one of:
-      - str (scalar or multi-line block, newlines preserved)
-      - list[str] (bullet list)
-    """
-    lines = path.read_text(encoding='utf-8').splitlines()
-    return _parse_block(lines)
 
 
 def _parse_block(lines: list[str]) -> dict:
@@ -115,7 +108,8 @@ def _parse_block(lines: list[str]) -> dict:
 
 def parse_records(path: Path) -> list[dict]:
     """Parse a file into a list of records separated by '---' lines.
-    Used for both sections files and cards files."""
+    The first record is the global content block (scalars, nav, pages);
+    every record after that is a section or card."""
     text = path.read_text(encoding='utf-8')
     groups: list[list[str]] = [[]]
     for line in text.splitlines():
@@ -222,6 +216,35 @@ def _substitute(tpl: str, ctx: dict, strict: bool) -> str:
     return out
 
 
+def derive_phone_fields(content: dict) -> None:
+    """If `phone:` is set, populate `phone_display` and `phone_dial`
+    unless they're already set (explicit overrides win).
+
+    Input is either E.164 (`+16177105598`) or a NANP-assumed digit
+    string (`6177105598`, `1-617-710-5598`). Other country codes get
+    a minimal `+CC NNNNN` display; override `phone_display` for
+    locale-specific formatting."""
+    phone = content.get('phone')
+    if not phone:
+        return
+    digits = re.sub(r'\D', '', phone)
+    if phone.strip().startswith('+'):
+        country, national = digits[:-10], digits[-10:]
+    elif len(digits) == 11 and digits.startswith('1'):
+        country, national = '1', digits[1:]
+    elif len(digits) == 10:
+        country, national = '1', digits
+    else:
+        return  # can't confidently parse; require overrides
+    content.setdefault('phone_dial', f'+{country}{national}')
+    if country == '1' and len(national) == 10:
+        content.setdefault(
+            'phone_display',
+            f'({national[:3]}) {national[3:6]}-{national[6:]}')
+    else:
+        content.setdefault('phone_display', f'+{country} {national}')
+
+
 def build_base_context(content: dict) -> dict:
     """Flatten the parsed content dict into {token: string} for template
     substitution. Lists render as <li> runs; multi-line blocks get an
@@ -255,8 +278,8 @@ def render_nav_items(items: list[str], ctx: dict) -> str:
     return '\n        '.join(out)
 
 
-def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
-                    base_ctx: dict) -> str:
+def render_section(section: dict, tpl_dir: Path, base_ctx: dict,
+                    cards_by_name: dict) -> str:
     """Render one section record against its fragment template."""
     stype = section.get('type')
     if not stype:
@@ -274,8 +297,30 @@ def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
     # reference them without every section having to set them.
     for opt in ('id', 'theme', 'eyebrow', 'alt'):
         local.setdefault(opt, '')
+
+    # Cards section: look up referenced cards by name, render into
+    # {{cards_html}}. Skip the `cards` field in the generic loop below
+    # so its raw name list doesn't leak into the template context.
+    cards_html = ''
+    if stype == 'cards':
+        names = section.get('cards') or []
+        if not isinstance(names, list):
+            raise ValueError(
+                "cards section 'cards' must be a bullet list of card names")
+        cards = []
+        for n in names:
+            if n not in cards_by_name:
+                raise KeyError(f"cards section references unknown card {n!r}")
+            cards.append(cards_by_name[n])
+        cps = section.get('cards_per_row')
+        col_span = int(cps) if cps else auto_col_span(len(cards))
+        card_tpl = _read_template(tpl_dir / 'partials' / 'card.html')
+        cards_html = '\n'.join(
+            render_card(c, col_span, card_tpl) for c in cards)
+    local['cards_html'] = cards_html
+
     for k, v in section.items():
-        if k == 'type':
+        if k == 'type' or (k == 'cards' and stype == 'cards'):
             continue
         if isinstance(v, list):
             local[k] = render_li(v)
@@ -295,27 +340,15 @@ def render_section(section: dict, tpl_dir: Path, sections_dir: Path,
                 local[f'{k[:-5]}_attrs'] = (
                     ' target="_blank" rel="noopener"' if is_external else '')
 
-    # Cards section: render the cards_file into {{cards_html}}.
-    if stype == 'cards' and section.get('cards_file'):
-        cards_path = sections_dir / section['cards_file']
-        cards = parse_records(cards_path)
-        cps = section.get('cards_per_row')
-        col_span = int(cps) if cps else auto_col_span(len(cards))
-        card_tpl = _read_template(tpl_dir / 'partials' / 'card.html')
-        local['cards_html'] = '\n'.join(
-            render_card(c, col_span, card_tpl) for c in cards)
-    else:
-        local.setdefault('cards_html', '')
-
     return _substitute(frag, local, strict=True)
 
 
 def render_sections_for_page(sections: list[dict], page: str,
-                              tpl_dir: Path, sections_dir: Path,
-                              base_ctx: dict) -> str:
+                              tpl_dir: Path, base_ctx: dict,
+                              cards_by_name: dict) -> str:
     page_sections = [s for s in sections if s.get('page', 'index') == page]
     return '\n'.join(
-        render_section(s, tpl_dir, sections_dir, base_ctx)
+        render_section(s, tpl_dir, base_ctx, cards_by_name)
         for s in page_sections
     )
 
@@ -356,13 +389,32 @@ def parse_pages(content: dict) -> list[dict]:
     return out
 
 
-def build(content_path: Path, sections_path: Path, tpl_dir: Path,
-          out_dir: Path, *, copy_static_files: bool = True) -> int:
+def build(content_path: Path, tpl_dir: Path, out_dir: Path,
+          *, copy_static_files: bool = True) -> int:
     # Template cache is per-build: content edits shouldn't see stale
     # template contents on the next watch-mode rebuild.
     _read_template.cache_clear()
-    content = parse(content_path)
-    sections = parse_records(sections_path) if sections_path.exists() else []
+    records = parse_records(content_path)
+    if not records:
+        print(f"error: {content_path} is empty", file=sys.stderr)
+        return 1
+    # First record = global content (scalars, nav, pages). Remaining
+    # records split into sections (rendered into pages) and cards
+    # (indexed by name, pulled in by cards-type sections).
+    content = records[0]
+    sections: list[dict] = []
+    cards_by_name: dict = {}
+    for rec in records[1:]:
+        if rec.get('type') == 'card':
+            name = rec.get('name')
+            if not name:
+                raise ValueError(f"card record missing 'name' field: {rec!r}")
+            if name in cards_by_name:
+                raise ValueError(f"duplicate card name: {name!r}")
+            cards_by_name[name] = rec
+        else:
+            sections.append(rec)
+    derive_phone_fields(content)
     base_ctx = build_base_context(content)
 
     # Nav + footer partials rendered once into tokens available on every page.
@@ -382,14 +434,13 @@ def build(content_path: Path, sections_path: Path, tpl_dir: Path,
         print("error: content file has no `pages:` list", file=sys.stderr)
         return 1
     layout_tpl = _read_template(tpl_dir / 'layout.html')
-    sections_dir = sections_path.parent
     for page in pages:
         stem = page['stem']
         page_ctx = dict(base_ctx)
         page_ctx['title'] = page['title']
         page_ctx['description'] = page['description']
         page_ctx['sections'] = render_sections_for_page(
-            sections, stem, tpl_dir, sections_dir, base_ctx)
+            sections, stem, tpl_dir, base_ctx, cards_by_name)
         out_path = (out_dir / 'index.html' if stem == 'index'
                     else out_dir / stem / 'index.html')
         try:
@@ -418,12 +469,11 @@ def snapshot_mtimes(content_dir: Path, tpl_dir: Path) -> dict:
     return {p: p.stat().st_mtime for p in paths if p.exists()}
 
 
-def watch_and_build(content_path: Path, sections_path: Path,
-                    tpl_dir: Path, out_dir: Path) -> int:
+def watch_and_build(content_path: Path, tpl_dir: Path, out_dir: Path) -> int:
     content_dir = content_path.parent
     css_dir = tpl_dir / 'css'
     last = snapshot_mtimes(content_dir, tpl_dir)
-    rc = build(content_path, sections_path, tpl_dir, out_dir)
+    rc = build(content_path, tpl_dir, out_dir)
     print(f"watching {tpl_dir}/ and {content_dir}/*.txt — Ctrl+C to stop")
     try:
         while True:
@@ -440,7 +490,7 @@ def watch_and_build(content_path: Path, sections_path: Path,
             # kicks the netlify dev file watcher.
             copy_css = any(css_dir in p.parents for p in changed)
             try:
-                build(content_path, sections_path, tpl_dir, out_dir,
+                build(content_path, tpl_dir, out_dir,
                       copy_static_files=copy_css)
             except Exception as e:
                 print(f"build error: {e}", file=sys.stderr)
@@ -452,8 +502,6 @@ def watch_and_build(content_path: Path, sections_path: Path,
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[1])
     ap.add_argument('content', help='path to the content file')
-    ap.add_argument('--sections',
-                    help='path to sections file (default: <content>.sections.txt)')
     ap.add_argument('--out', required=True, help='output directory')
     ap.add_argument('--templates', default='template-site',
                     help='path to template directory (default: ./template-site)')
@@ -465,15 +513,9 @@ def main() -> int:
     tpl_dir = Path(args.templates)
     out_dir = Path(args.out)
 
-    if args.sections:
-        sections_path = Path(args.sections)
-    else:
-        # Default: <content-stem>.sections.txt next to the content file.
-        sections_path = content_path.with_suffix('.sections.txt')
-
     if args.watch:
-        return watch_and_build(content_path, sections_path, tpl_dir, out_dir)
-    return build(content_path, sections_path, tpl_dir, out_dir)
+        return watch_and_build(content_path, tpl_dir, out_dir)
+    return build(content_path, tpl_dir, out_dir)
 
 
 if __name__ == '__main__':

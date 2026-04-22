@@ -133,6 +133,7 @@ p {
    ------------------------------------------------------------- */
 
 .section {
+  position: relative;
   padding: var(--section-pad) 0;
 }
 
@@ -162,6 +163,26 @@ p {
 .section--dark .muted      { color: var(--dark-muted); opacity: 1; }
 .section--dark hr          { border-color: var(--dark-border); }
 .section--dark .card       { border-color: var(--dark-border); }
+
+/* Faint divider between consecutive sections sharing a theme (same
+   background — otherwise they'd visually merge). Inset to container
+   width so it lines up with text. */
+.section--light + .section--light::before,
+.section--gray  + .section--gray::before,
+.section--dark  + .section--dark::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: 1px;
+  width: calc(100% - 2 * var(--page-pad));
+  max-width: calc(var(--max-width) - 2 * var(--page-pad));
+}
+.section--light + .section--light::before { background: var(--light-border); }
+.section--gray  + .section--gray::before  { background: var(--gray-border); }
+.section--dark  + .section--dark::before  { background: var(--dark-border); }
 
 /* Shared in-section defaults */
 .section h1,
