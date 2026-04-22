@@ -14,6 +14,7 @@ email: rita@alvarezcycleworks.com
 phone: 5025550142
 booking_url: https://alvarezcycleworks.com/book
 year: 2026
+color_scheme: auto
 
 meta_description: Independent bicycle mechanic in Portland, OR. Tune-ups, overhauls, and mobile service.
 

@@ -139,6 +139,16 @@ Inside `template-site/sections/<type>.html`:
 Common optional fields default to empty so fragments can reference
 them unconditionally: `id`, `theme`, `eyebrow`, `alt`.
 
+## Color scheme
+
+Set `color_scheme:` in the first (global) record to one of:
+
+- `light` (default) — section themes render as-is.
+- `dark` — light/gray section themes flip to dark palettes. Sections
+  with `theme: dark` stay dark either way; nav, footer, and hero are
+  always dark.
+- `auto` — follows the visitor's `prefers-color-scheme`.
+
 ## Pages
 
 A `pages:` entry is `stem | title | description`. The `index` stem

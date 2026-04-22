@@ -415,6 +415,11 @@ def build(content_path: Path, tpl_dir: Path, out_dir: Path,
         else:
             sections.append(rec)
     derive_phone_fields(content)
+    cs = content.setdefault('color_scheme', 'light')
+    if cs not in ('light', 'dark', 'auto'):
+        print(f"error: color_scheme must be 'light', 'dark', or 'auto'; got {cs!r}",
+              file=sys.stderr)
+        return 1
     base_ctx = build_base_context(content)
 
     # Nav + footer partials rendered once into tokens available on every page.

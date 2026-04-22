@@ -63,3 +63,37 @@
   --transition   : 0.2s ease;
 
 }
+
+/* =============================================================
+   Color scheme — driven by `color_scheme:` in the content file
+   (rendered as data-color-scheme on <html>).
+
+   Rule: light/gray section schemes flip to dark palettes; sections
+   with `theme: dark` stay dark. Nav/footer/hero are always dark.
+   ============================================================= */
+
+:root[data-color-scheme="light"] { color-scheme: light; }
+:root[data-color-scheme="dark"]  { color-scheme: dark; }
+:root[data-color-scheme="auto"]  { color-scheme: light dark; }
+
+:root[data-color-scheme="dark"] {
+  --light-bg     : var(--black);
+  --light-text   : var(--off-white);
+  --light-border : var(--gray-dark);
+
+  --gray-bg      : #1a1a1a;
+  --gray-text    : var(--off-white);
+  --gray-border  : var(--gray-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-color-scheme="auto"] {
+    --light-bg     : var(--black);
+    --light-text   : var(--off-white);
+    --light-border : var(--gray-dark);
+
+    --gray-bg      : #1a1a1a;
+    --gray-text    : var(--off-white);
+    --gray-border  : var(--gray-dark);
+  }
+}
