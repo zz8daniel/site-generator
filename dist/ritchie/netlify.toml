@@ -1,0 +1,16 @@
+# Netlify config for the generated site.
+# The output directory IS the deployable site — there is no build step on
+# Netlify's side; `generate.py` produces final static files.
+#
+# Local preview:
+#   cd dist/<name> && netlify dev
+#
+# Netlify serves pretty URLs by default (/services -> services.html) and
+# auto-detects the contact form via the `netlify` attribute in contact.html,
+# so no explicit redirect or forms config is required here.
+
+[build]
+  publish = "."
+
+[dev]
+  publish = "."

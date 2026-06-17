@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-color-scheme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Ritchie Piano Service</title>
+  <meta name="description" content="Get in touch with Ritchie Piano Service.">
+  <link rel="icon" href="./images/favicon.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/theme.css">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="/">Ritchie Piano Service</a>
+      <button class="nav__toggle" aria-label="Toggle menu"
+        onclick="this.closest('nav').querySelector('.nav__links').classList.toggle('is-open')">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links">
+        <li><a href="/#top">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="https://gazelleapp.io/scheduling/9RZL3PMt2mm32mnJ4fjXTSyx" class="btn-nav" target="_blank" rel="noopener">Book Now</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="nav-spacer"></div>
+
+
+  <header class="page-header">
+    <div class="container">
+      <p class="page-header__label"></p>
+      <h1 class="page-header__title">Contact</h1>
+    </div>
+  </header>
+
+  <section id="" class="section section--light">
+    <div class="container">
+      <div class="grid">
+
+        <div class="col-4 contact-info">
+          <p class="label muted">Direct Contact</p>
+
+          <p class="contact-info__heading">Email</p>
+          <p class="contact-info__value">
+            <a class="link" href="mailto:daniel@ritchiepiano.com">daniel@ritchiepiano.com</a>
+          </p>
+
+          <p class="contact-info__heading">Phone</p>
+          <p class="contact-info__value contact-info__value--last">
+            <a href="tel:+18283378348">(828) 337-8348</a>
+          </p>
+
+          <p class="label muted">Service Area</p>
+          <p class="contact-info__service-area">Western Mass including Easthampton, Holyoke, Northampton, Westhampton, Hadley, South Hadley, Chicopee, Springfield, West Springfield, Hatfield, Westfield, Montgomery, Russell, Huntington, Agawam, Southwick, Longmeadow, Ludlow, East Springfield, Indian Orchard, MA</p>
+        </div>
+
+        <div class="col-8">
+          <form class="form" name="contact" method="POST" netlify netlify-honeypot="bot-field" action="/thank-you">
+            <input type="hidden" name="form-name" value="contact">
+            <p class="form__honeypot"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="first-name" required>
+              </div>
+              <div class="field">
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="last-name" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="service">Service Interested In</label>
+              <select id="service" name="service">
+                <option value="">Select one...</option>
+                <option value="standard">Standard Tuning</option>
+<option value="advanced">Advanced Service</option>
+                <option value="unsure">Not Sure Yet</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Tell Me About Your Piano</label>
+              <textarea id="message" name="message" required
+                placeholder="Brand, serial #, age, last service date, any issues you've noticed..."></textarea>
+            </div>
+
+            <div>
+              <button type="submit" class="btn btn--dark">Send Message</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="grid">
+
+        <div class="col-6">
+          <p class="footer__logo">Ritchie Piano Service</p>
+          <p class="footer__tagline">Western Mass including Easthampton, Holyoke, Northampton, Westhampton, Hadley, South Hadley, Chicopee, Springfield, West Springfield, Hatfield, Westfield, Montgomery, Russell, Huntington, Agawam, Southwick, Longmeadow, Ludlow, East Springfield, Indian Orchard, MA</p>
+          <ul class="footer__contact">
+            <li><a href="mailto:daniel@ritchiepiano.com">daniel@ritchiepiano.com</a></li>
+            <li><a href="tel:+18283378348">(828) 337-8348</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6">
+          <ul class="footer__nav">
+            <li><a href="/#top">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="https://gazelleapp.io/scheduling/9RZL3PMt2mm32mnJ4fjXTSyx" class="btn-nav" target="_blank" rel="noopener">Book Now</a></li>
+          </ul>
+        </div>
+
+      </div>
+      <p class="footer__bottom">&copy; 2026 Ritchie Piano Service. All rights reserved.</p>
+    </div>
+  </footer>
+
+
+</body>
+</html>

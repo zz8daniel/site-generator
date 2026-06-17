@@ -1,0 +1,140 @@
+# Ritchie Piano Service - site content
+#
+# This file has three parts, separated by lines containing only `---`:
+#   1. Global content (scalars, nav, pages) — the first record.
+#   2. Section records — `type: <fragment>`, rendered into pages.
+#   3. Card records — `type: card` with a unique `name:`, referenced
+#      by name from cards-type sections.
+
+business_name: Ritchie Piano Service
+owner_name: Daniel Ritchie
+location: Western Massachusetts
+service_area: Western Mass including Easthampton, Holyoke, Northampton, Westhampton, Hadley, South Hadley, Chicopee, Springfield, West Springfield, Hatfield, Westfield, Montgomery, Russell, Huntington, Agawam, Southwick, Longmeadow, Ludlow, East Springfield, Indian Orchard, MA
+email: daniel@ritchiepiano.com
+phone: 8283378348
+booking_url: https://gazelleapp.io/scheduling/9RZL3PMt2mm32mnJ4fjXTSyx
+year: 2026
+color_scheme: auto
+
+meta_description: Professional piano tuning and service in Hampshire and Hampden Counties, MA.
+
+nav:
+- Home | /#top
+- Services | /#services
+- About | /#about
+- Contact | /contact
+- Book Now | {{booking_url}} | external, button
+
+pages:
+- index     | Ritchie Piano Service          | {{meta_description}}
+- contact   | Contact - Ritchie Piano Service | Get in touch with Ritchie Piano Service.
+- thank-you | Message Sent - Ritchie Piano Service
+
+---
+
+# Home page sections (in render order)
+
+type: hero
+id: top
+bg_image: hero.jpg
+title_line1: Ritchie Piano
+title_line2: Service
+subtitle: Professional piano tuning & repair in Western Massachusetts
+button_label: Schedule Now
+button_href: {{booking_url}}
+
+---
+
+type: cards
+id: services
+theme: light
+eyebrow: Services
+heading: Services
+intro >>>
+I offer two tiers of service depending on the state of your instrument. Not sure what you need? Book a Standard Tuning for now, or [Contact me](/contact) any time.
+<<<
+cards:
+- Advanced Service
+cta_label: Book Now
+cta_href: {{booking_url}}
+
+---
+
+type: card
+name: Standard Tuning
+intro: Professional aural tuning of your piano, set by ear against a reference pitch. Available in:
+bullets:
+- Equal temperament (modern standard)
+- Historic temperaments (Werckmeister, Kirnberger, Valotti, Young)
+
+---
+
+type: card
+name: Advanced Service
+intro: "Full regulation of your piano, plus tuning. You may need this if your piano:"
+bullets:
+- Has not been serviced in more than 2 years
+- Won't hold pitch
+- Feels uncomfortable to play
+- Has more than one malfunctioning note
+
+---
+
+type: banner-image
+image: services.jpg
+alt:
+
+---
+
+type: prose
+id: about
+theme: light
+eyebrow: About
+heading: David Bryant
+body >>>
+I'm David Bryant, a professional piano technician based in Cambridge, MA. I was trained at [NBSS](https://nbss.edu/) in Boston and now service pianos across the greater metropolitan area.
+
+Whether your piano needs a standard tuning or a full regulation, I bring the same level of care and precision to every instrument.
+<<<
+
+---
+
+type: cta-split
+theme: dark
+image: about.jpg
+alt:
+heading: Ready to get started?
+body: Book a standard tuning or reach out with questions about your instrument.
+primary_label: Book Now
+primary_href: {{booking_url}}
+secondary_label: Get In Touch
+secondary_href: /contact
+
+---
+
+page: contact
+type: page-header
+heading: Contact
+
+---
+
+page: contact
+type: contact-form
+theme: light
+message_label: Tell Me About Your Piano
+message_placeholder: Brand, serial #, age, last service date, any issues you've noticed...
+service_options >>>
+<option value="standard">Standard Tuning</option>
+<option value="advanced">Advanced Service</option>
+<<<
+
+---
+
+page: thank-you
+type: hero-message
+theme: dark
+eyebrow: Message Received
+heading: Thank You
+body: I'll review your message and get back to you as soon as I can.
+button_label: Back to Home
+button_href: /

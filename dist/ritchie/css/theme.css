@@ -1,0 +1,99 @@
+/* =============================================================
+   BRYANT PIANO SERVICE — Theme Variables
+
+   This is the file to edit for design changes.
+   Colors, fonts, and spacing are all defined here.
+   ============================================================= */
+
+:root {
+
+  /* --- Fonts ---
+     Change the font names here to swap typefaces.
+     Make sure to also update the Google Fonts link in each HTML file. */
+  --font-heading : 'Playfair Display', Georgia, serif;
+  --font-body    : 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* --- Color Palette ---
+     Define all raw colors here. */
+  --black      : #0d0d0d;
+  --off-white  : #f7f7f5;
+  --white      : #ffffff;
+  --gray-light : #eeeeec;
+  --gray-mid   : #999997;
+  --gray-dark  : #444442;
+
+  /* --- Section Color Schemes ---
+     Three schemes: light, gray, dark.
+     Apply them with .section--light / .section--gray / .section--dark
+     on any <section> element. */
+
+  --light-bg     : var(--white);
+  --light-text   : var(--black);
+  --light-muted  : var(--gray-mid);
+  --light-border : var(--gray-light);
+
+  --gray-bg      : var(--gray-light);
+  --gray-text    : var(--black);
+  --gray-muted   : var(--gray-mid);
+  --gray-border  : #d8d8d6;
+
+  --dark-bg      : var(--black);
+  --dark-text    : var(--off-white);
+  --dark-muted   : var(--gray-dark);
+  --dark-border  : var(--gray-dark);
+
+  /* --- Spacing ---
+     Section vertical padding scales with viewport width. */
+  --section-pad  : clamp(64px, 9vw, 128px);
+  --content-gap  : 2rem;
+
+  /* --- Grid --- */
+  --grid-gap     : 1.5rem;
+  --grid-cols    : 12;
+
+  /* --- Container --- */
+  --max-width    : 1200px;
+  --page-pad     : clamp(1rem, 5vw, 2.5rem);
+
+  /* --- Nav --- */
+  --nav-height   : 68px;
+
+  /* --- Misc --- */
+  --radius       : 2px;
+  --transition   : 0.2s ease;
+
+}
+
+/* =============================================================
+   Color scheme — driven by `color_scheme:` in the content file
+   (rendered as data-color-scheme on <html>).
+
+   Rule: light/gray section schemes flip to dark palettes; sections
+   with `theme: dark` stay dark. Nav/footer/hero are always dark.
+   ============================================================= */
+
+:root[data-color-scheme="light"] { color-scheme: light; }
+:root[data-color-scheme="dark"]  { color-scheme: dark; }
+:root[data-color-scheme="auto"]  { color-scheme: light dark; }
+
+:root[data-color-scheme="dark"] {
+  --light-bg     : var(--black);
+  --light-text   : var(--off-white);
+  --light-border : var(--gray-dark);
+
+  --gray-bg      : #1a1a1a;
+  --gray-text    : var(--off-white);
+  --gray-border  : var(--gray-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-color-scheme="auto"] {
+    --light-bg     : var(--black);
+    --light-text   : var(--off-white);
+    --light-border : var(--gray-dark);
+
+    --gray-bg      : #1a1a1a;
+    --gray-text    : var(--off-white);
+    --gray-border  : var(--gray-dark);
+  }
+}
