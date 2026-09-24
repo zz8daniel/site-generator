@@ -40,7 +40,7 @@ bg_image: hero.jpg
 title_line1: Ritchie Piano
 title_line2: Service
 subtitle: Professional piano tuning, repair, and regulation service in Hampshire & Hampden Counties, Massachusetts
-button_label: Schedule Now
+button_label: Book Now
 button_href: {{booking_url}}
 
 ---
@@ -51,7 +51,10 @@ theme: light
 eyebrow: Services
 heading: Services
 intro >>>
-I offer the services listed below. Tuning is, of course, the most common service, recommended twice a year for most people (at least once a year, to avoid problems, if you’re on a budget, more often for more demanding players). Not sure what you need? Book a Standard Tuning for now, or [Contact me](/contact) any time.
+Tuning is, of course, the most common service and recommended twice a year for most people (more often for more demanding players). If that’s not financially feasible, tuning at least once a year helps avoid or address problems early and can keep your piano’s tuning stable longer. 
+
+Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time. Click “Book Now” to see fees.
+
 <<<
 cards:
 - Advanced Service
@@ -62,15 +65,12 @@ cta_href: {{booking_url}}
 
 type: card
 name: Standard Tuning
-intro: Fine tuning to adjust for changes due to seasonal humidity and playing. If your piano has not been tuned in the past year or so, it may be far enough off standard pitch to need a pitch correction tuning before fine tuning.
-bullets:
-- Equal 
-- Historic
+intro: Fine tuning to standard pitch (recommended every 6-12 months). Adjusts for changes due to seasonal humidity and playing. It may include a minor pitch correction if one section of the piano is further out of tune/off pitch.
 
 ---
 
 type: card
-name: Advanced Service
+name: Standard Tuning with Pitch Correction
 intro: "Full regulation of your piano, plus tuning. You may need this if your piano:"
 bullets:
 - Has not been serviced in more than 2 years
