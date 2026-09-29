@@ -51,9 +51,9 @@ theme: light
 eyebrow: Services
 heading: Services
 intro >>>
-Tuning is, of course, the most common service and recommended twice a year for most people (more often for more demanding players). If that’s not financially feasible, tuning at least once a year helps avoid or address problems early and can keep your piano’s tuning stable longer. 
+Tuning is, of course, the most common service and recommended twice a year for most people (more often for more demanding players). If that’s not financially feasible, tuning at least once a year can keep your piano’s tuning stable longer and helps avoid or address problems early.
 
-Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time. Click “Book Now” to see fees.
+Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time.
 <<<
 cards:
 - Standard Tuning
@@ -78,7 +78,7 @@ type: card
 name: Standard Tuning with Pitch Correction
 intro: A full pitch correction before the fine tuning. Appropriate and necessary if:
 bullets:
-- your piano has not been tuned in a year or so
+- your piano has not been tuned in more than a year
 -if I find the pitch is off substantially from standard (A-440)
 If you are unsure whether your piano needs this, choose the Standard Tuning above and I will assess the pitch when I visit.
 
@@ -86,13 +86,13 @@ If you are unsure whether your piano needs this, choose the Standard Tuning abov
 
 type: card
 name: Repairs (on site)
-intro: Common repairs I can take care of on site include keys slow to return, notes that continue to sound, missing keytops, broken strings, pedal issues, clicks and pops, etc. Small jobs can sometimes be done during a tuning. If your piano has not been tuned in more than 6 months, I recommend scheduling a tuning at the same time.
+intro: Common repairs I can take care of on site: keys slow to return, notes that continue to sound, missing keytops, broken strings, pedal issues, clicks and pops, and more. Small jobs can sometimes be done during a tuning. If your piano has not been tuned in more than 6 months, I recommend scheduling a tuning at the same time.
 
 ---
 
 type: card
 name: Regulation (Coming soon)
-intro: Adjusts and lubricates many parts to restore high function and playability. Addresses wear, friction, and humidity-related issues. Recommended at least every five years (more often in the first five years or if played more) or if it responds poorly, feels uncomfortable to play, sounds dull or uneven in volume, or makes clicking, popping, or other odd sounds.
+intro: Adjusts and lubricates many parts to restore high function and smooth playing. Addresses wear, friction, and humidity-related issues. Recommended at least every five years (more often in the first five years or if played more) or if it responds poorly, feels uncomfortable to play, sounds dull or uneven in volume, or makes clicking, popping, or other odd sounds.
 
 ---
 
@@ -104,13 +104,13 @@ intro: Includes thorough cleaning of keytops, dusting and vacuuming the soundboa
 
 type: card
 name: Full Cleaning
-intro: Includes elements in a Basic Cleaning plus cleaning the “insides”: the action and action cavity, keyframe, underneath the keys, and the key pins. Regular cleaning of these areas helps keep your piano working well and helps prevent deteriorating function and damage.
+intro: Includes elements in a Basic Cleaning plus cleaning the “inside”: the action and action cavity, keyframe, underneath the keys, and the key pins. Regular cleaning of these areas helps keep your piano working well and helps prevent deteriorating function and damage.
 
 ---
 
 type: card
 name: Inspection and Written Report
-intro: I examine the condition parts and function and provide a report with photos afterwards. Report also provides recommended work for improving playability and sound quality. This is not an appraisal for insurance or for an expected price of a sale. A tuning is recommended and typically scheduled at the same time.
+intro: I examine the condition of its parts and function and provide a report with photos afterwards. Report also provides recommended work for improving how it plays and sound quality. This is not an appraisal for insurance or for an expected price of a sale but is often used for selling or purchasing. A tuning is recommended and typically scheduled at the same time.
 
 ---
 
@@ -126,9 +126,10 @@ theme: light
 eyebrow: About
 heading: Daniel Ritchie
 body >>>
-I'm David Bryant, a professional piano technician based in Cambridge, MA. I was trained at [NBSS](https://nbss.edu/) in Boston and now service pianos across the greater metropolitan area.
+I’m Daniel Ritchie, a professional piano technician/tuner living in Easthampton and serving Hampshire, Hampden, and parts of Franklin Counties. I work on grand and upright pianos and give each one the same quality of care. I love making a piano sound more beautiful and feel better to play. My work is really satisfying, and meeting people is fun and rewarding too!
 
-Whether your piano needs a standard tuning or a full regulation, I bring the same level of care and precision to every instrument.
+I was trained at North Bennet Street School in Boston, the only full-time, in-person program of its kind in the country. I am also a member of the Piano Technicians Guild. 
+
 <<<
 
 ---
