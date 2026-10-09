@@ -126,7 +126,7 @@ theme: light
 eyebrow: About
 heading: Daniel Ritchie
 body >>>
-I’m Daniel Ritchie, a professional piano technician/tuner living in Easthampton and serving Hampshire, Hampden, and parts of Franklin Counties. I work on grand and upright pianos and give each one the same quality of care. I love making a piano sound more beautiful and feel better to play. My work is really satisfying, and meeting people is fun and rewarding too!
+I’m Daniel Ritchie, a professional piano technician/tuner living in Easthampton and serving Hampshire and Hampden Counties and parts of Franklin Co. and N. Connecticut. I work on grand and upright pianos and give each one the same quality of care. I love making a piano sound more beautiful and feel better to play, it's such satisfying work. Meeting piano owners is fun bonus!
 
 I was trained at North Bennet Street School in Boston, the only full-time, in-person program of its kind in the country. I am also a member of the Piano Technicians Guild. 
 
@@ -156,8 +156,8 @@ heading: Contact
 page: contact
 type: contact-form
 theme: light
-message_label: Tell Me About Your Piano
-message_placeholder: Brand, serial #, age, last service date, any issues you've noticed...
+message_label: Tell Me About Your Piano (Brand, type–grand, upright, spinet, serial #, age, last service date, any issues) 
+message_placeholder: 
 service_options >>>
 <option value="standard">Standard Tuning</option>
 <option value="advanced">Advanced Service</option>
