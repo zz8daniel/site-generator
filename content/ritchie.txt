@@ -51,7 +51,9 @@ theme: light
 eyebrow: Services
 heading: Services
 intro >>>
-Tuning is, of course, the most common service and recommended twice a year for most people (more often for more demanding players). If that’s not financially feasible, tuning at least once a year can keep your piano’s tuning stable longer and helps avoid or address problems early.
+Tuning is recommended twice a year for most people (more often for more demanding players). If that’s not financially feasible, tuning at least once a year can help keep your piano’s tuning stable longer and helps avoid or address problems early. 
+
+Often, when part of a piano is not working right or doesn’t feel or sound right, I recommend having me come tune it as part of a repair or regulation service. Let me know as specifically as you can what’s happening with your piano, and I can assess further at the appointment.
 
 Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time.
 <<<
@@ -76,7 +78,7 @@ intro: Fine tuning to standard pitch (recommended every 6-12 months). Adjusts fo
 
 type: card
 name: Standard Tuning with Pitch Correction
-intro: A full pitch correction before the fine tuning. Appropriate and necessary if:
+intro: A full pitch correction before the fine tuning. Appropriate and often necessary if:
 bullets:
 - your piano has not been tuned in more than a year
 -if I find the pitch is off substantially from standard (A-440)
