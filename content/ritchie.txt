@@ -34,9 +34,9 @@ pages:
 
 # Home page sections (in render order)
 
-type: hero
+type: Banner1a
 id: top
-bg_image: hero.jpg
+bg_image: Banner1a.jpg
 title_line1: Ritchie Piano
 title_line2: Service
 subtitle: Professional piano tuning, repair, and regulation service in Hampshire & Hampden Counties, Massachusetts
@@ -166,7 +166,7 @@ service_options >>>
 ---
 
 page: thank-you
-type: hero-message
+type: Banner1a-message
 theme: dark
 eyebrow: Message Received
 heading: Thank You
