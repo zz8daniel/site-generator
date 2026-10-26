@@ -34,9 +34,9 @@ pages:
 
 # Home page sections (in render order)
 
-type: Banner1a
+type: hero
 id: top
-bg_image: Banner1a.jpg
+bg_image: Banner1a.jpeg
 title_line1: Ritchie Piano
 title_line2: Service
 subtitle: Professional piano tuning, repair, and regulation service in Hampshire & Hampden Counties, Massachusetts
@@ -78,11 +78,10 @@ intro: Fine tuning to standard pitch (recommended every 6-12 months). Adjusts fo
 
 type: card
 name: Standard Tuning with Pitch Correction
-intro: A full pitch correction before the fine tuning. Appropriate and often necessary if:
+intro: A full pitch correction before the fine tuning. If you are unsure whether your piano needs this, choose the Standard Tuning above and I will assess the pitch when I visit. Appropriate and often necessary if:
 bullets:
 - your piano has not been tuned in more than a year
--if I find the pitch is off substantially from standard (A-440)
-If you are unsure whether your piano needs this, choose the Standard Tuning above and I will assess the pitch when I visit.
+- if I find the pitch is off substantially from standard (A-440)
 
 ---
 
@@ -168,7 +167,7 @@ service_options >>>
 ---
 
 page: thank-you
-type: Banner1a-message
+type: hero-message
 theme: dark
 eyebrow: Message Received
 heading: Thank You
