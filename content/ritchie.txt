@@ -9,14 +9,14 @@
 business_name: Ritchie Piano Service
 owner_name: Daniel Ritchie
 location: Western Massachusetts
-service_area: Western Mass including Easthampton, Holyoke, Northampton, Westhampton, South Hampton, Hadley, South Hadley, Granby, Chicopee, Springfield, West Springfield, Hatfield, Westfield, Montgomery, Russell, Huntington, Agawam, Southwick, Longmeadow, Ludlow, East Springfield, Indian Orchard, MA
+service_area: Western Mass including Agawam, Amherst, Chicopee, Deerfield, Easthampton, East Longmeadow, East Springfield, Forest Park, Granby, Greenfield, Hadley, Hatfield, Holyoke, Huntington, Indian Orchard, Leverett, Longmeadow, Ludlow, Montague, Montgomery, North Amherst, Northampton, Palmer, Pelham, Sunderland, Russell, South Hadley, Southampton, Southwick, Springfield, Westhampton, Westfield, West Springfield, Whately, MA
 email: daniel@ritchiepiano.com
 phone: 4132828393
 booking_url: https://gazelleapp.io/scheduling/8dmr9G0zPWWxpGc6vWgRpBQL
 year: 2026
 color_scheme: auto
 
-meta_description: Professional piano tuning and service in Hampshire and Hampden Counties, MA.
+meta_description: Professional piano tuning and service in Hampshire, Hampden, and Franklin Counties, MA and nearby Northern Connecticut.
 
 nav:
 - Home | /#top
@@ -51,11 +51,12 @@ theme: light
 eyebrow: Services
 heading: Services
 intro >>>
-Tuning is recommended twice a year for most people (more often for more demanding players). If that’s not financially feasible, tuning at least once a year can help keep your piano’s tuning stable longer and helps avoid or address problems early. 
+Tuning is recommended twice a year for people who play regularly. If that’s not financially feasible, tuning at least once a year can help your piano’s tuning begin to stay stable longer and helps avoid or address problems early.
 
-Often, when part of a piano is not working right or doesn’t feel or sound right, I recommend having me come tune it as part of a repair or regulation service. Let me know as specifically as you can what’s happening with your piano, and I can assess further at the appointment.
+If your piano is not working right or doesn’t feel or sound right, I recommend booking a tuning and I can troubleshoot and offer repair or regulation options. Let me know as descriptively as you can what’s happening with your piano when you schedule or contact me.
 
 Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time.
+
 <<<
 cards:
 - Standard Tuning
@@ -121,15 +122,19 @@ alt:
 
 ---
 
-type: prose
+type: image-right
 id: about
 theme: light
+image: DanielAbout.jpeg
 eyebrow: About
 heading: Daniel Ritchie
 body >>>
-I’m Daniel Ritchie, a professional piano technician/tuner living in Easthampton and serving Hampshire and Hampden Counties and parts of Franklin Co. and N. Connecticut. I work on grand and upright pianos and give each one the same quality of care. I love making a piano sound more beautiful and feel better to play, it's such satisfying work. Meeting piano owners is fun bonus!
+I’m a full-time professional piano technician / tuner living in Easthampton and serving Hampshire, Hampden, and parts of Franklin Counties and nearby northern Connecticut. Whether your piano is an upright or a grand, I will give it my full attention and care. 
 
 I was trained at North Bennet Street School in Boston, the only full-time, in-person program of its kind in the country. I am also a member of the Piano Technicians Guild. 
+
+The piano is an incredible and complex instrument. The great pleasure of my work is to make yours sound beautiful and to make playing it more enjoyable and satisfying. It’s rewarding work, and meeting piano owners and players is the bonus. I look forward to meeting you and getting to work on your piano.
+
 
 <<<
 
@@ -137,7 +142,7 @@ I was trained at North Bennet Street School in Boston, the only full-time, in-pe
 
 type: cta-split
 theme: dark
-image: about.jpg
+image: ReadyStrings.jpegg
 alt:
 heading: Ready to get started?
 body: Book a standard tuning or reach out with questions about your instrument.
@@ -157,11 +162,16 @@ heading: Contact
 page: contact
 type: contact-form
 theme: light
-message_label: Tell Me About Your Piano (Brand, type–grand, upright, spinet, serial #, age, last service date, any issues) 
-message_placeholder: 
+message_label: Tell Me About Your Piano (Brand; type–-grand, upright, or spinet; last service date; any issues; serial # or age) 
+message_placeholder: What's going on with your piano?
 service_options >>>
 <option value="standard">Standard Tuning</option>
-<option value="advanced">Advanced Service</option>
+<option value="Standard + pitch">Standard Tuning with Pitch Correction</option>
+<option value="Repairs">Repairs (on site)</option>
+<option value="Regulation">Regulation (Coming soon)</option>
+<option value="Cleaning">Basic Cleaning*</option>
+<option value="Full Clng">Full Cleaning</option>
+<option value="Inspection">Inspection and Written Report</option>
 <<<
 
 ---
@@ -171,6 +181,6 @@ type: hero-message
 theme: dark
 eyebrow: Message Received
 heading: Thank You
-body: I'll review your message and get back to you as soon as I can.
+body: I'll review your message and get back to you soon.
 button_label: Back to Home
 button_href: /
