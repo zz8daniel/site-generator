@@ -1,0 +1,63 @@
+# Regenerates every site already in dist/ whenever its inputs change, and
+# commits the result. Netlify deploys straight from dist/<name>, so without
+# this a content-only edit never reaches Netlify (it cancels the build with
+# "no changes in base directory").
+#
+# Only sites that already have a dist/<name>/ folder are rebuilt. To start
+# deploying a new site, generate it once locally and commit dist/<name>/.
+
+name: Build sites
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - content/**
+      - template-site/**
+      - generate.py
+      - .github/workflows/build-sites.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-sites
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate sites
+        run: |
+          set -e
+          for dir in dist/*/; do
+            name=$(basename "$dir")
+            content="content/$name.txt"
+            if [ ! -f "$content" ]; then
+              echo "::warning::dist/$name has no $content; skipping"
+              continue
+            fi
+            echo "Building $name"
+            rm -rf "dist/$name"
+            python generate.py "$content" --out "dist/$name"
+          done
+
+      - name: Commit changes
+        run: |
+          if [ -z "$(git status --porcelain dist)" ]; then
+            echo "dist/ already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -A dist
+          git commit -m "Rebuild dist from ${GITHUB_SHA::7}"
+          git push

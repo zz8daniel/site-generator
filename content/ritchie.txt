@@ -51,11 +51,11 @@ theme: light
 eyebrow:
 heading: Services
 intro >>>
-"Tuning is recommended twice a year for people who play regularly. If that’s not financially feasible, tuning at least once a year can help your piano’s tuning begin to stay stable longer and helps avoid or address problems early."
+Tuning is recommended twice a year for people who play regularly. If that’s not financially feasible, tuning at least once a year can help your piano’s tuning begin to stay stable longer and helps avoid or address problems early.
 
-"If your piano is not working right or doesn’t feel or sound right, I recommend booking a tuning and I can troubleshoot and offer repair or regulation options. Let me know as descriptively as you can what’s happening with your piano when you schedule, or contact me."
+If your piano is not working right or doesn’t feel or sound right, I recommend booking a tuning and I can troubleshoot and offer repair or regulation options. Let me know as descriptively as you can what’s happening with your piano when you schedule, or contact me.
 
-"Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time."
+Not sure what you need? Book a standard tuning for now, or [Contact me](/contact) any time.
 <<<
 cards:
 - Standard Tuning
