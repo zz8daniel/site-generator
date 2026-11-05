@@ -3,11 +3,17 @@
 # Netlify's side; `generate.py` produces final static files.
 #
 # Local preview:
-#   cd dist/<name> && netlify dev
+#   python generate.py content/<name>.txt --out dist/<name> --watch --serve
 #
-# Netlify serves pretty URLs by default (/services -> services.html) and
-# auto-detects the contact form via the `netlify` attribute in contact.html,
-# so no explicit redirect or forms config is required here.
+# Netlify serves pretty URLs by default (/services -> services.html).
+#
+# The contact form is a Netlify Form (the `netlify` attribute in
+# contact/index.html). Two caveats:
+#   - Form detection is off by default for new sites: enable it under
+#     Site configuration > Forms, then redeploy. Until then, submitting
+#     returns "Page not found".
+#   - `netlify dev` does not process form submissions; a local POST returns
+#     405 Method Not Allowed. Use `generate.py --serve` to test it locally.
 
 [build]
   publish = "."
