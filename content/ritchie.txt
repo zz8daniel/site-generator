@@ -36,7 +36,7 @@ pages:
 
 type: hero
 id: top
-bg_image: IMG_7893banner_orig.jpeg
+bg_image: Banner2.jpeg
 title_line1: Ritchie Piano
 title_line2: Service
 subtitle: Professional piano tuning and service in Hampshire, Hampden, and Franklin Counties, MA and nearby Northern Connecticut
@@ -118,16 +118,16 @@ intro: I examine the condition of the piano's parts and function and provide a r
 type: image-right
 id: about
 theme: light
-image: DanielAbout.jpeg
+image: BossSqrClose.jpg
 alt:
 eyebrow: About
 heading: Daniel Ritchie
 body >>>
-I’m a full-time professional piano technician / tuner living in Easthampton and serving Hampshire, Hampden, and parts of Franklin Counties and nearby northern Connecticut. Whether your piano is an upright or a grand, I will give it my full attention and care.  
+I’m a full-time professional piano technician / tuner living in Easthampton and serving Hampshire, Hampden, and Franklin Counties, MA and nearby northern Connecticut. Whether your piano is an upright or a grand, I will give it my full attention and care. 
 
-I was trained at North Bennet Street School in Boston, the only full-time, in-person program of its kind in the country. I am also a member of the Piano Technicians Guild.  
+I was trained at North Bennet Street School in Boston, the only full-time, in-person program of its kind in the country. I am also a member of the Piano Technicians Guild. 
 
-The piano is an incredible and complex instrument. The great pleasure of my work is to make yours sound beautiful and to make playing it more enjoyable and satisfying. It’s rewarding work, and meeting piano owners and players is the bonus. I look forward to meeting you and getting to work on your piano.
+The piano is an incredible and complex instrument. The great pleasure of my work is to make yours sound beautiful and to make playing it more enjoyable and satisfying. It’s rewarding work, and meeting piano owners and players is the bonus. I look forward to meeting you and getting to work on your piano. 
 <<<
 
 ---
