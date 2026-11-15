@@ -23,7 +23,8 @@
         onclick="this.closest('nav').querySelector('.nav__links').classList.toggle('is-open')">
         <span></span><span></span><span></span>
       </button>
-      <ul class="nav__links">
+      <ul class="nav__links"
+        onclick="if (event.target.closest('a')) this.classList.remove('is-open')">
         <li><a href="/#top">Home</a></li>
         <li><a href="/#services">Services</a></li>
         <li><a href="/#about">About</a></li>
