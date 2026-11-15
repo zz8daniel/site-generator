@@ -92,7 +92,7 @@ intro: Common repairs I can take care of on site: keys slow to return, notes tha
 ---
 
 type: card
-name: Regulation (Coming soon)
+name: Regulation
 intro: Adjusts and lubricates many parts to restore high function and smooth playing.  Recommended every five years or if it responds poorly, feels uncomfortable to play, sounds dull or uneven in volume, or makes clicking, popping, or other odd sounds.
 
 ---
@@ -157,13 +157,13 @@ theme: light
 message_label: "Tell Me About Your Piano (Brand; type–-grand, upright, or spinet; last service date; any issues; serial # or age)" 
 message_placeholder: What's going on with your piano?
 service_options >>>
-<option value="standard">Standard Tuning</option>
-<option value="Standard + pitch">Standard Tuning with Pitch Correction</option>
+<option value="Standard Tuning">Standard Tuning</option>
+<option value="Standard Tuning with Pitch Correction">Standard Tuning with Pitch Correction</option>
 <option value="Repairs">Repairs (on site)</option>
 <option value="Regulation">Regulation (Coming soon)</option>
-<option value="Cleaning">Basic Cleaning*</option>
-<option value="Full Clng">Full Cleaning</option>
-<option value="Inspection">Inspection and Written Report</option>
+<option value="Basic Cleaning">Basic Cleaning*</option>
+<option value="Full Cleaning">Full Cleaning</option>
+<option value="Inspection and Written Report">Inspection and Written Report</option>
 <<<
 
 ---
